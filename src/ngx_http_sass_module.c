@@ -1,6 +1,7 @@
 #include <ngx_config.h>
 #include <ngx_core.h>
 #include <ngx_http.h>
+#include <sass_interface.h>
 
 
 typedef struct {
@@ -70,6 +71,8 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     ngx_file_info_t            fi;
     ngx_str_t                  path;
     ngx_http_sass_loc_conf_t  *clcf;
+    struct sass_context       *ctx;
+    struct sass_options        options;
 
     if (!(r->method & (NGX_HTTP_GET|NGX_HTTP_HEAD))) {
         return NGX_DECLINED;
@@ -126,11 +129,33 @@ ngx_http_sass_handler(ngx_http_request_t *r)
         goto declined;
     }
 
+    options.output_style    = SASS_STYLE_NESTED;
+    options.source_comments = 0;
+    options.image_path      = "images";
+    options.include_paths   = "";
+
+    ctx                = sass_new_context();
+    ctx->options       = options;
+    ctx->source_string = (char*) scss;
+
+    sass_compile(ctx);
+
+    if (ctx->error_status && ctx->error_message) {
+        ngx_log_debug1(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass compilation error: %s", ctx->error_message);
+        sass_free_context(ctx);
+        goto declined;
+    } else if (ctx->error_status) {
+        ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass compilation error");
+        sass_free_context(ctx);
+        goto declined;
+    }
 
     ngx_memzero(&cv, sizeof(ngx_http_complex_value_t));
 
-    cv.value.len = size;
-    cv.value.data = scss;
+    cv.value.len  = size;
+    cv.value.data = (u_char*) ctx->output_string;
+
+    sass_free_context(ctx);
 
     if (NGX_FILE_ERROR == ngx_close_file(file.fd)) {
         ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass close file error");
