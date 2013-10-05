@@ -10,8 +10,7 @@ typedef struct {
 
 static ngx_int_t ngx_http_sass_init(ngx_conf_t *cf);
 static void *ngx_http_sass_create_loc_conf(ngx_conf_t *cf);
-static char *ngx_http_sass_merge_loc_conf(ngx_conf_t *cf,void *parent,
-    void *child);
+static char *ngx_http_sass_merge_loc_conf(ngx_conf_t *cf,void *parent, void *child);
 
 
 static ngx_command_t  ngx_http_sass_commands[] = {
@@ -25,6 +24,7 @@ static ngx_command_t  ngx_http_sass_commands[] = {
     ngx_null_command
 };
 
+static ngx_str_t  ngx_http_sass_type = ngx_string("text/css");
 
 static ngx_http_module_t  ngx_http_sass_module_ctx = {
     NULL,                          /* preconfiguration */
@@ -62,9 +62,12 @@ ngx_module_t  ngx_http_sass_module = {
 static ngx_int_t
 ngx_http_sass_handler(ngx_http_request_t *r)
 {
-    size_t                     root;
-    u_char                    *last;
-    ngx_int_t                  rc;
+    size_t                     size, root;
+    ssize_t                    n;
+    u_char                    *scss, *last;
+    ngx_http_complex_value_t   cv;
+    ngx_file_t                 file;
+    ngx_file_info_t            fi;
     ngx_str_t                  path;
     ngx_http_sass_loc_conf_t  *clcf;
 
@@ -78,12 +81,6 @@ ngx_http_sass_handler(ngx_http_request_t *r)
         return NGX_DECLINED;
     }
 
-    rc = ngx_http_discard_request_body(r);
-
-    if (NGX_OK != rc) {
-        return rc;
-    }
-
     last = ngx_http_map_uri_to_path(r, &path, &root, 0);
 
     if (NULL == last) {
@@ -92,7 +89,60 @@ ngx_http_sass_handler(ngx_http_request_t *r)
 
     path.len = last - path.data;
 
-    ngx_log_debug1(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass compile path: \"%V\"", &path);
+    ngx_log_debug1(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass open file: \"%V\"", &path);
+    ngx_memzero(&file, sizeof(ngx_file_t));
+
+    file.name = path;
+    file.log  = r->connection->log;
+    file.fd = ngx_open_file(path.data, NGX_FILE_RDONLY, 0, 0);
+
+    if (NGX_INVALID_FILE == file.fd) {
+        ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass open file error");
+        return NGX_DECLINED;
+    }
+
+    if (NGX_FILE_ERROR == ngx_fd_info(file.fd, &fi)) {
+        ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass fd info error");
+        goto declined;
+    }
+
+    size = (size_t) ngx_file_size(&fi);
+    scss = ngx_palloc(r->pool, size);
+
+    if (NULL == scss) {
+        ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass palloc error");
+        goto declined;
+    }
+
+    n = ngx_read_file(&file, scss, size, 0);
+
+    if (NGX_ERROR == n) {
+        ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass read file error");
+        goto declined;
+    }
+
+    if ((size_t) n != size) {
+        ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass read file wrong size");
+        goto declined;
+    }
+
+
+    ngx_memzero(&cv, sizeof(ngx_http_complex_value_t));
+
+    cv.value.len = size;
+    cv.value.data = scss;
+
+    if (NGX_FILE_ERROR == ngx_close_file(file.fd)) {
+        ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass close file error");
+    }
+
+    return ngx_http_send_response(r, NGX_HTTP_OK, &ngx_http_sass_type, &cv);
+
+declined:
+
+    if (NGX_FILE_ERROR == ngx_close_file(file.fd)) {
+        ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass close file error");
+    }
 
     return NGX_DECLINED;
 }
