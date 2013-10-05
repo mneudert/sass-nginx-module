@@ -62,6 +62,10 @@ ngx_module_t  ngx_http_sass_module = {
 static ngx_int_t
 ngx_http_sass_handler(ngx_http_request_t *r)
 {
+    size_t                     root;
+    u_char                    *last;
+    ngx_int_t                  rc;
+    ngx_str_t                  path;
     ngx_http_sass_loc_conf_t  *clcf;
 
     if (!(r->method & (NGX_HTTP_GET|NGX_HTTP_HEAD))) {
@@ -71,14 +75,24 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     clcf = ngx_http_get_module_loc_conf(r, ngx_http_sass_module);
 
     if (!clcf->enable) {
-        ngx_log_debug(NGX_LOG_DEBUG_HTTP, r->connection->log, 0,
-                      "sass compile OFF");
-
         return NGX_DECLINED;
     }
 
-    ngx_log_debug(NGX_LOG_DEBUG_HTTP, r->connection->log, 0,
-                  "sass compile ON");
+    rc = ngx_http_discard_request_body(r);
+
+    if (NGX_OK != rc) {
+        return rc;
+    }
+
+    last = ngx_http_map_uri_to_path(r, &path, &root, 0);
+
+    if (NULL == last) {
+        return NGX_HTTP_INTERNAL_SERVER_ERROR;
+    }
+
+    path.len = last - path.data;
+
+    ngx_log_debug1(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass compile path: \"%V\"", &path);
 
     return NGX_DECLINED;
 }
