@@ -66,7 +66,8 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     size_t                     size, root;
     ssize_t                    n;
     u_char                    *scss, *last;
-    ngx_http_complex_value_t   cv;
+    ngx_buf_t*                 b;
+    ngx_chain_t                out;
     ngx_file_t                 file;
     ngx_file_info_t            fi;
     ngx_str_t                  path;
@@ -130,8 +131,8 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     }
 
     options.output_style    = SASS_STYLE_NESTED;
-    options.source_comments = 0;
-    options.image_path      = "images";
+    options.source_comments = SASS_SOURCE_COMMENTS_DEFAULT;
+    options.image_path      = "";
     options.include_paths   = "";
 
     ctx                = sass_new_context();
@@ -150,10 +151,18 @@ ngx_http_sass_handler(ngx_http_request_t *r)
         goto declined;
     }
 
-    ngx_memzero(&cv, sizeof(ngx_http_complex_value_t));
+    b        = ngx_pcalloc(r->pool, sizeof(ngx_buf_t));
+    out.buf  = b;
+    out.next = NULL;
 
-    cv.value.data = (u_char*) ctx->output_string;
-    cv.value.len  = strlen(cv.value.data);
+    b->pos      = (u_char*) ctx->output_string;
+    b->last     = (u_char*) ctx->output_string + strlen(ctx->output_string);
+    b->memory   = 1;
+    b->last_buf = 1;
+
+    r->headers_out.status           = NGX_HTTP_OK;
+    r->headers_out.content_type     = ngx_http_sass_type;
+    r->headers_out.content_length_n = strlen(ctx->output_string);
 
     sass_free_context(ctx);
 
@@ -161,7 +170,8 @@ ngx_http_sass_handler(ngx_http_request_t *r)
         ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass close file error");
     }
 
-    return ngx_http_send_response(r, NGX_HTTP_OK, &ngx_http_sass_type, &cv);
+    ngx_http_send_header(r);
+    return ngx_http_output_filter(r, &out);
 
 declined:
 
@@ -169,7 +179,7 @@ declined:
         ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass close file error");
     }
 
-    return NGX_DECLINED;
+    return NGX_HTTP_INTERNAL_SERVER_ERROR;
 }
 
 
