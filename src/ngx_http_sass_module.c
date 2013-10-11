@@ -98,7 +98,7 @@ ngx_http_sass_handler(ngx_http_request_t *r)
 
     file.name = path;
     file.log  = r->connection->log;
-    file.fd = ngx_open_file(path.data, NGX_FILE_RDONLY, 0, 0);
+    file.fd   = ngx_open_file(path.data, NGX_FILE_RDONLY, 0, 0);
 
     if (NGX_INVALID_FILE == file.fd) {
         ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass open file error");
@@ -134,6 +134,8 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     options.source_comments = SASS_SOURCE_COMMENTS_DEFAULT;
     options.image_path      = "";
     options.include_paths   = "";
+
+    scss[strlen((char*) scss)] = *"";
 
     ctx                = sass_new_context();
     ctx->options       = options;
