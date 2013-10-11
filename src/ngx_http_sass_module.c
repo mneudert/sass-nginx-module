@@ -152,8 +152,8 @@ ngx_http_sass_handler(ngx_http_request_t *r)
 
     ngx_memzero(&cv, sizeof(ngx_http_complex_value_t));
 
-    cv.value.len  = size;
     cv.value.data = (u_char*) ctx->output_string;
+    cv.value.len  = strlen(cv.value.data);
 
     sass_free_context(ctx);
 
