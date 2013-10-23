@@ -63,16 +63,14 @@ ngx_module_t  ngx_http_sass_module = {
 static ngx_int_t
 ngx_http_sass_handler(ngx_http_request_t *r)
 {
-    size_t                     size, root;
-    ssize_t                    n;
-    u_char                    *scss, *last;
+    size_t                     root;
+    u_char                    *last;
     ngx_buf_t*                 b;
     ngx_chain_t                out;
     ngx_file_t                 file;
-    ngx_file_info_t            fi;
     ngx_str_t                  path;
     ngx_http_sass_loc_conf_t  *clcf;
-    struct sass_context       *ctx;
+    struct sass_file_context  *ctx;
     struct sass_options        options;
 
     if (!(r->method & (NGX_HTTP_GET|NGX_HTTP_HEAD))) {
@@ -93,64 +91,30 @@ ngx_http_sass_handler(ngx_http_request_t *r)
 
     path.len = last - path.data;
 
-    ngx_log_debug1(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass open file: \"%V\"", &path);
+    ngx_log_debug1(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass compile file: \"%V\"", &path);
     ngx_memzero(&file, sizeof(ngx_file_t));
-
-    file.name = path;
-    file.log  = r->connection->log;
-    file.fd   = ngx_open_file(path.data, NGX_FILE_RDONLY, 0, 0);
-
-    if (NGX_INVALID_FILE == file.fd) {
-        ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass open file error");
-        return NGX_DECLINED;
-    }
-
-    if (NGX_FILE_ERROR == ngx_fd_info(file.fd, &fi)) {
-        ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass fd info error");
-        goto declined;
-    }
-
-    size = (size_t) ngx_file_size(&fi);
-    scss = ngx_palloc(r->pool, size);
-
-    if (NULL == scss) {
-        ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass palloc error");
-        goto declined;
-    }
-
-    n = ngx_read_file(&file, scss, size, 0);
-
-    if (NGX_ERROR == n) {
-        ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass read file error");
-        goto declined;
-    }
-
-    if ((size_t) n != size) {
-        ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass read file wrong size");
-        goto declined;
-    }
 
     options.output_style    = SASS_STYLE_NESTED;
     options.source_comments = SASS_SOURCE_COMMENTS_DEFAULT;
     options.image_path      = "";
     options.include_paths   = "";
 
-    scss[strlen((char*) scss)] = *"";
+    ctx             = sass_new_file_context();
+    ctx->options    = options;
+    ctx->input_path = (char*) path.data;
 
-    ctx                = sass_new_context();
-    ctx->options       = options;
-    ctx->source_string = (char*) scss;
-
-    sass_compile(ctx);
+    sass_compile_file(ctx);
 
     if (ctx->error_status && ctx->error_message) {
         ngx_log_debug1(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass compilation error: %s", ctx->error_message);
-        sass_free_context(ctx);
-        goto declined;
+        sass_free_file_context(ctx);
+
+        return NGX_HTTP_INTERNAL_SERVER_ERROR;
     } else if (ctx->error_status) {
         ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass compilation error");
-        sass_free_context(ctx);
-        goto declined;
+        sass_free_file_context(ctx);
+
+        return NGX_HTTP_INTERNAL_SERVER_ERROR;
     }
 
     b        = ngx_pcalloc(r->pool, sizeof(ngx_buf_t));
@@ -166,22 +130,10 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     r->headers_out.content_type     = ngx_http_sass_type;
     r->headers_out.content_length_n = strlen(ctx->output_string);
 
-    sass_free_context(ctx);
-
-    if (NGX_FILE_ERROR == ngx_close_file(file.fd)) {
-        ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass close file error");
-    }
+    sass_free_file_context(ctx);
 
     ngx_http_send_header(r);
     return ngx_http_output_filter(r, &out);
-
-declined:
-
-    if (NGX_FILE_ERROR == ngx_close_file(file.fd)) {
-        ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass close file error");
-    }
-
-    return NGX_HTTP_INTERNAL_SERVER_ERROR;
 }
 
 
