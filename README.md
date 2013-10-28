@@ -60,3 +60,22 @@ Add a new location-block to your local server block similar to the (pretty
 minimal) configuration example you can find in the [etc directory](etc/vhost.conf).
 Using a rewrite ensures all the magic happens under the hood and you do not
 have to change your application to load different files.
+
+### Parameters
+
+Output Style:
+
+    location / {
+        sass_output nested;     # default
+        sass_output expanded;
+        sass_output compact;
+        sass_output compressed;
+    }
+
+Source Comments:
+
+    location / {
+        sass_comments none;    # default
+        sass_comments default;
+        sass_comments map;
+    }
