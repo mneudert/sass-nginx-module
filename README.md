@@ -79,3 +79,13 @@ Source Comments:
         sass_comments default;
         sass_comments map;
     }
+
+Include Paths:
+
+    location / {
+        # windows (semicolon as path sep)
+        sass_include_paths  "/some/dir;/another/dir"
+
+        # everywhere else (colon as path sep)
+        sass_include_paths  "/some/dir:/another/dir"
+    }
