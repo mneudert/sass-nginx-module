@@ -63,29 +63,35 @@ have to change your application to load different files.
 
 ### Parameters
 
-Output Style:
+Image Path:
 
     location / {
-        sass_output nested;     # default
-        sass_output expanded;
-        sass_output compact;
-        sass_output compressed;
-    }
-
-Source Comments:
-
-    location / {
-        sass_comments none;    # default
-        sass_comments default;
-        sass_comments map;
+        sass_image_path  "/path/to/something";
     }
 
 Include Paths:
 
     location / {
         # windows (semicolon as path sep)
-        sass_include_paths  "/some/dir;/another/dir"
+        sass_include_paths  "/some/dir;/another/dir";
 
         # everywhere else (colon as path sep)
-        sass_include_paths  "/some/dir:/another/dir"
+        sass_include_paths  "/some/dir:/another/dir";
+    }
+
+Output Style:
+
+    location / {
+        sass_output  nested;     # default
+        sass_output  expanded;
+        sass_output  compact;
+        sass_output  compressed;
+    }
+
+Source Comments:
+
+    location / {
+        sass_comments  none;    # default
+        sass_comments  default;
+        sass_comments  map;
     }
