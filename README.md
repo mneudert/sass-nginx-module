@@ -63,6 +63,13 @@ have to change your application to load different files.
 
 ### Parameters
 
+Error Log Level:
+
+    location / {
+        # same as regular nginx error log
+        sass_error_log  error;  #default
+    }
+
 Image Path:
 
     location / {

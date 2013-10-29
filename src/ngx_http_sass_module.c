@@ -6,6 +6,7 @@
 
 typedef struct {
     ngx_flag_t  enable;
+    ngx_uint_t  error_log;
     ngx_str_t   image_path;
     ngx_str_t   include_paths;
     ngx_uint_t  output_style;
@@ -17,6 +18,7 @@ static ngx_int_t ngx_http_sass_init(ngx_conf_t *cf);
 static void *ngx_http_sass_create_loc_conf(ngx_conf_t *cf);
 static char *ngx_http_sass_merge_loc_conf(ngx_conf_t *cf,void *parent, void *child);
 static char *ngx_http_sass_comments_value(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
+static char *ngx_http_sass_error_log_value(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 static char *ngx_http_sass_output_value(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 
 
@@ -33,6 +35,13 @@ static ngx_command_t  ngx_http_sass_commands[] = {
       ngx_conf_set_flag_slot,
       NGX_HTTP_LOC_CONF_OFFSET,
       offsetof(ngx_http_sass_loc_conf_t, enable),
+      NULL },
+
+    { ngx_string("sass_error_log"),
+      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_FLAG,
+      ngx_http_sass_error_log_value,
+      NGX_HTTP_LOC_CONF_OFFSET,
+      offsetof(ngx_http_sass_loc_conf_t, error_log),
       NULL },
 
     { ngx_string("sass_image_path"),
@@ -59,7 +68,22 @@ static ngx_command_t  ngx_http_sass_commands[] = {
     ngx_null_command
 };
 
+
 static ngx_str_t  ngx_http_sass_type = ngx_string("text/css");
+
+
+static ngx_str_t  err_levels[] = {
+    ngx_null_string,
+    ngx_string("emerg"),
+    ngx_string("alert"),
+    ngx_string("crit"),
+    ngx_string("error"),
+    ngx_string("warn"),
+    ngx_string("notice"),
+    ngx_string("info"),
+    ngx_string("debug")
+};
+
 
 static ngx_http_module_t  ngx_http_sass_module_ctx = {
     NULL,                          /* preconfiguration */
@@ -125,7 +149,7 @@ ngx_http_sass_handler(ngx_http_request_t *r)
 
     path.len = last - path.data;
 
-    ngx_log_debug1(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass compile file: \"%V\"", &path);
+    ngx_log_debug(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass compile file: \"%V\"", &path);
     ngx_memzero(&file, sizeof(ngx_file_t));
 
     options.output_style    = clcf->output_style;
@@ -140,12 +164,12 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     sass_compile_file(ctx);
 
     if (ctx->error_status && ctx->error_message) {
-        ngx_log_debug1(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass compilation error: %s", ctx->error_message);
+        ngx_log_error(clcf->error_log, r->connection->log, 0, "sass compilation error: %s", ctx->error_message);
         sass_free_file_context(ctx);
 
         return NGX_HTTP_INTERNAL_SERVER_ERROR;
     } else if (ctx->error_status) {
-        ngx_log_debug0(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass compilation error");
+        ngx_log_error(clcf->error_log, r->connection->log, 0, "sass compilation error");
         sass_free_file_context(ctx);
 
         return NGX_HTTP_INTERNAL_SERVER_ERROR;
@@ -183,6 +207,7 @@ ngx_http_sass_create_loc_conf(ngx_conf_t *cf)
     }
 
     conf->enable          = NGX_CONF_UNSET;
+    conf->error_log       = NGX_LOG_ERR;
     conf->output_style    = SASS_STYLE_NESTED;
     conf->source_comments = SASS_SOURCE_COMMENTS_NONE;
 
@@ -203,6 +228,32 @@ ngx_http_sass_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
     ngx_conf_merge_uint_value(conf->source_comments, prev->source_comments, SASS_SOURCE_COMMENTS_NONE);
 
     return NGX_CONF_OK;
+}
+
+
+static char *
+ngx_http_sass_error_log_value(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
+{
+    ngx_str_t  *value;
+    ngx_uint_t  n;
+
+    ngx_http_sass_loc_conf_t *slcf = conf;
+
+    value = cf->args->elts;
+
+    for (n = 1; n <= NGX_LOG_DEBUG; n++) {
+        if (0 == ngx_strcmp(value[1].data, err_levels[n].data)) {
+            slcf->error_log = n;
+            return NGX_CONF_OK;
+        }
+    }
+
+    ngx_conf_log_error(
+        NGX_LOG_EMERG, cf, 0,
+        "invalid sass_error_log parameter \"%V\"", &value[1]
+    );
+
+    return NGX_CONF_ERROR;
 }
 
 
