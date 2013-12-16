@@ -127,7 +127,7 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     ngx_chain_t                out;
     ngx_file_t                 file;
     ngx_int_t                  rc;
-    ngx_str_t                  path;
+    ngx_str_t                  content, path;
     ngx_http_sass_loc_conf_t  *clcf;
     struct sass_file_context  *ctx;
     struct sass_options        options;
@@ -188,7 +188,17 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     out.buf  = b;
     out.next = NULL;
 
-    ngx_str_t content = ngx_string(ctx->output_string);
+    content.len  = ctx->output_string;
+    content.data = ngx_pnalloc(r->pool, content.len + 1);
+
+    if (NULL == content.data) {
+        ngx_log_error(clcf->error_log, r->connection->log, 0, "sass failed to allocate response buffer");
+        sass_free_file_context(ctx);
+
+        return NGX_HTTP_INTERNAL_SERVER_ERROR;
+    }
+
+    ngx_cpystrn(content.data, ctx->output_string, strlen(ctx->output_string));
 
     b->start    = b->pos = content.data;
     b->last     = b->end = content.data + strlen(content.data);
@@ -202,11 +212,7 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     sass_free_file_context(ctx);
     ngx_http_send_header(r);
 
-    rc = ngx_http_output_filter(r, &out);
-
-    free(b);
-
-    return rc;
+    return ngx_http_output_filter(r, &out);
 }
 
 
