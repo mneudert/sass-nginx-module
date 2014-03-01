@@ -126,7 +126,6 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     ngx_buf_t*                 b;
     ngx_chain_t                out;
     ngx_file_t                 file;
-    ngx_int_t                  rc;
     ngx_str_t                  content, path;
     ngx_http_sass_loc_conf_t  *clcf;
     struct sass_file_context  *ctx;
@@ -155,12 +154,12 @@ ngx_http_sass_handler(ngx_http_request_t *r)
 
     options.output_style    = clcf->output_style;
     options.source_comments = clcf->source_comments;
-    options.image_path      = (char*) clcf->image_path.data;
-    options.include_paths   = (char*) clcf->include_paths.data;
+    options.image_path      = (char *) clcf->image_path.data;
+    options.include_paths   = (char *) clcf->include_paths.data;
 
     ctx             = sass_new_file_context();
     ctx->options    = options;
-    ctx->input_path = (char*) path.data;
+    ctx->input_path = (char *) path.data;
 
     sass_compile_file(ctx);
 
@@ -188,8 +187,8 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     out.buf  = b;
     out.next = NULL;
 
-    content.len  = ctx->output_string;
-    content.data = ngx_pnalloc(r->pool, content.len + 1);
+    content.len  = sizeof(ctx->output_string) - 1;
+    content.data = ngx_pnalloc(r->pool, strlen(ctx->output_string));
 
     if (NULL == content.data) {
         ngx_log_error(clcf->error_log, r->connection->log, 0, "sass failed to allocate response buffer");
@@ -198,16 +197,16 @@ ngx_http_sass_handler(ngx_http_request_t *r)
         return NGX_HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    ngx_cpystrn(content.data, ctx->output_string, strlen(ctx->output_string));
+    ngx_cpystrn(content.data, (unsigned char *) ctx->output_string, strlen(ctx->output_string));
 
     b->start    = b->pos = content.data;
-    b->last     = b->end = content.data + strlen(content.data);
+    b->last     = b->end = content.data + strlen(ctx->output_string);
     b->memory   = 1;
     b->last_buf = 1;
 
     r->headers_out.status           = NGX_HTTP_OK;
     r->headers_out.content_type     = ngx_http_sass_type;
-    r->headers_out.content_length_n = strlen(content.data);
+    r->headers_out.content_length_n = strlen(ctx->output_string);
 
     sass_free_file_context(ctx);
     ngx_http_send_header(r);
