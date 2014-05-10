@@ -16,6 +16,7 @@ completely deactivating your vhost.
 
 Use with caution!
 
+
 ## Compilation
 
 ### Prerequisites
@@ -36,6 +37,12 @@ This can be done by adding the path to the *$LD\_LIBRARY\_PATH* variable or the
 file */etc/ld.so.conf*. Either way, please ensure the command above finds your
 local libsass installation before proceeding.
 
+During compilation the following header files have to be available:
+
+- sass.h
+- sass_interface.h
+- sass2scss/sass2scss.h
+
 ### Nginx
 
 Using this module is as easy as recompiling nginx from source:
@@ -51,6 +58,7 @@ Or if you want to have debug logs available:
     make
 
 Afterwards you can find a sass-enhanced nginx executable in the *objs* directory.
+
 
 ## Configuration
 
