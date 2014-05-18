@@ -30,4 +30,4 @@ install:
 
   - cpanm --installdeps --notest Test::Nginx
 
-script: ./prove
+script: prove
