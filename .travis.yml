@@ -6,9 +6,9 @@ before_install:
 install:
   - mkdir ./vendor && cd ./vendor
 
-  - wget http://nginx.org/download/nginx-1.6.0.tar.gz && tar -xvf nginx-1.6.0.tar.gz
-  - wget https://github.com/openresty/lua-nginx-module/archive/v0.9.7.tar.gz -O lua-nginx-module-0.9.7.tar.gz && tar -xvf lua-nginx-module-0.9.7.tar.gz
-  - wget https://github.com/simpl/ngx_devel_kit/archive/v0.2.19.tar.gz -O ngx-devel-kit-0.2.19.tar.gz && tar -xvf ngx-devel-kit-0.2.19.tar.gz
+  - wget http://nginx.org/download/nginx-1.6.0.tar.gz && tar -xf nginx-1.6.0.tar.gz
+  - wget https://github.com/openresty/lua-nginx-module/archive/v0.9.7.tar.gz -O lua-nginx-module-0.9.7.tar.gz && tar -xf lua-nginx-module-0.9.7.tar.gz
+  - wget https://github.com/simpl/ngx_devel_kit/archive/v0.2.19.tar.gz -O ngx-devel-kit-0.2.19.tar.gz && tar -xf ngx-devel-kit-0.2.19.tar.gz
   - git clone https://github.com/hcatlin/libsass.git --recursive
 
   - cd ./libsass
@@ -27,6 +27,6 @@ install:
   - sudo make install
   - PATH="$PATH:/usr/local/nginx/sbin"
 
-  - cpanm --quiet --installdeps --notest Test::Nginx
+  - cpanm --installdeps --notest --mirror http://cpan.mirrors.travis-ci.org/ Test::Nginx
 
 script: ./prove
