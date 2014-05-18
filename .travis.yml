@@ -1,7 +1,8 @@
-language: c
+language: perl
+perl: 5.19
 
 before_install:
-  - sudo apt-get install cpanminus libpcre3 libpcre3-dev libluajit-5.1-dev libluajit-5.1.2
+  - sudo apt-get install libpcre3 libpcre3-dev libluajit-5.1-dev libluajit-5.1.2
 
 install:
   - mkdir ./vendor && cd ./vendor
