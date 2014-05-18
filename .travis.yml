@@ -26,8 +26,8 @@ install:
   - export LUAJIT_INC=/usr/include/luajit-2.0/
   - ./configure --add-module=../ngx_devel_kit-0.2.19 --add-module=../lua-nginx-module-0.9.7 --add-module=../../
   - sudo make install
-  - PATH="$PATH:/usr/local/nginx/sbin"
+  - export PATH=$PATH:/usr/local/nginx/sbin
 
   - cpanm --installdeps --notest Test::Nginx
 
-script: prove
+script: cd ${TRAVIS_BUILD_DIR} && prove
