@@ -28,6 +28,6 @@ install:
   - sudo make install
   - export PATH=$PATH:/usr/local/nginx/sbin
 
-  - cpanm --installdeps --notest Test::Nginx
+  - cpanm -v --notest Test::Nginx
 
 script: cd ${TRAVIS_BUILD_DIR} && prove
