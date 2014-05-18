@@ -1,0 +1,32 @@
+language: c
+
+before_install:
+  - sudo apt-get install cpanminus libpcre3 libpcre3-dev libluajit-5.1-dev libluajit-5.1.2
+
+install:
+  - mkdir ./vendor && cd ./vendor
+
+  - wget http://nginx.org/download/nginx-1.6.0.tar.gz && tar -xvf nginx-1.6.0.tar.gz
+  - wget https://github.com/openresty/lua-nginx-module/archive/v0.9.7.tar.gz -O lua-nginx-module-0.9.7.tar.gz && tar -xvf lua-nginx-module-0.9.7.tar.gz
+  - wget https://github.com/simpl/ngx_devel_kit/archive/v0.2.19.tar.gz -O ngx-devel-kit-0.2.19.tar.gz && tar -xvf ngx-devel-kit-0.2.19.tar.gz
+  - git clone https://github.com/hcatlin/libsass.git --recursive
+
+  - cd ./libsass
+  - sudo make install
+  - sudo make install-shared
+  - sudo ldconfig
+  - sudo cp sass.h /usr/include/
+  - sudo cp sass_interface.h /usr/include/
+  - sudo mkdir /usr/include/sass2scss
+  - sudo cp sass2scss/sass2scss.h /usr/include/sass2scss/
+
+  - cd ../nginx-1.6.0
+  - export LUAJIT_LIB=/usr/lib/x86_64-linux-gnu/
+  - export LUAJIT_INC=/usr/include/luajit-2.0/
+  - ./configure --add-module=../ngx_devel_kit-0.2.19 --add-module=../lua-nginx-module-0.9.7 --add-module=../../
+  - sudo make install
+  - PATH="$PATH:/usr/local/nginx/sbin"
+
+  - cpanm --quiet --installdeps --notest Test::Nginx
+
+script: ./prove
