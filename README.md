@@ -43,21 +43,42 @@ During compilation the following header files have to be available:
 - sass_interface.h
 - sass2scss/sass2scss.h
 
+### Unit Test Requirements
+
+The unit tests use [Test::Nginx](http://github.com/agentzh/test-nginx) and Lua.
+
+To be able to run them using `prove` you need to compile nginx with the
+[lua module](https://github.com/openresty/lua-nginx-module) and
+[devel kit module](https://github.com/simpl/ngx_devel_kit).
+
 ### Nginx
 
 Using this module is as easy as recompiling nginx from source:
 
-    cd /path/to/nginx/src
-    ./configure --add-module=/path/to/sass-nginx-module
-    make
+```shell
+cd /path/to/nginx/src
+./configure --add-module=/path/to/sass-nginx-module
+make install
+```
 
 Or if you want to have debug logs available:
 
-    cd /path/to/nginx/src
-    ./configure --add-module=/path/to/sass-nginx-module --with-debug
-    make
+```shell
+cd /path/to/nginx/src
+./configure --add-module=/path/to/sass-nginx-module --with-debug
+make install
+```
 
-Afterwards you can find a sass-enhanced nginx executable in the *objs* directory.
+To be able to run the unit tests you need additional modules configured:
+
+```shell
+cd /path/to/nginx/src
+./configure \
+  --add-module=/projects/public/ngx_devel_kit \
+  --add-module=/projects/public/lua-nginx-module \
+  --add-module=/projects/private/sass-nginx-module
+make install
+```
 
 
 ## Configuration
