@@ -10,16 +10,13 @@ install:
   - wget http://nginx.org/download/nginx-1.6.0.tar.gz && tar -xf nginx-1.6.0.tar.gz
   - wget https://github.com/openresty/lua-nginx-module/archive/v0.9.7.tar.gz -O lua-nginx-module-0.9.7.tar.gz && tar -xf lua-nginx-module-0.9.7.tar.gz
   - wget https://github.com/simpl/ngx_devel_kit/archive/v0.2.19.tar.gz -O ngx-devel-kit-0.2.19.tar.gz && tar -xf ngx-devel-kit-0.2.19.tar.gz
-  - git clone https://github.com/hcatlin/libsass.git --recursive
+  - git clone https://github.com/hcatlin/libsass.git
 
   - cd ./libsass
-  - sudo make install
-  - sudo make install-shared
+  - git checkout v1.0.1
+  - sudo make install install-shared
   - sudo ldconfig
-  - sudo cp sass.h /usr/include/
-  - sudo cp sass_interface.h /usr/include/
-  - sudo mkdir /usr/include/sass2scss
-  - sudo cp sass2scss/sass2scss.h /usr/include/sass2scss/
+  - sudo cp sass.h sass_interface.h /usr/include/
 
   - cd ../nginx-1.6.0
   - export LUAJIT_LIB=/usr/lib/x86_64-linux-gnu/

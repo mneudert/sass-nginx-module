@@ -22,11 +22,14 @@ Use with caution!
 ### Prerequisites
 
 To be able to compile this module you need [libsass](https://github.com/hcatlin/libsass)
-available.
+available. The version used in the travis environment is `v1.0.1`, the use of a
+different version can result in unexpected behaviour.
 
 Also it has to be recognized by ldconfig:
 
-    ldconfig -p | grep "libsass"
+```shell
+ldconfig -p | grep "libsass"
+```
 
 If it does not show up try to rebuild the index first using *ldconfig* as
 *root* user and rerun the grep command. Sometimes you need to add the path
@@ -41,7 +44,6 @@ During compilation the following header files have to be available:
 
 - sass.h
 - sass_interface.h
-- sass2scss/sass2scss.h
 
 ### Unit Test Requirements
 
