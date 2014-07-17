@@ -17,6 +17,8 @@ install:
   - sudo make install install-shared
   - sudo ldconfig
   - sudo cp sass.h sass_interface.h /usr/include/
+  - sudo mkdir /usr/include/sass2scss
+  - sudo cp sass2scss/sass2scss.h /usr/include/sass2scss
 
   - cd ../nginx-1.6.0
   - export LUAJIT_LIB=/usr/lib/x86_64-linux-gnu/
