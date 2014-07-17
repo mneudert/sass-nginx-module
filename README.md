@@ -21,8 +21,8 @@ Use with caution!
 
 ### Prerequisites
 
-To be able to compile this module you need [libsass](https://github.com/hcatlin/libsass)
-available. The version used in the travis environment is `v1.0.1`, the use of a
+To be able to compile this module you need [libsass](https://github.com/sass/libsass)
+available. The version used in the travis environment is `v2.0`, the use of a
 different version can result in unexpected behaviour.
 
 Also it has to be recognized by ldconfig:
@@ -44,6 +44,7 @@ During compilation the following header files have to be available:
 
 - sass.h
 - sass_interface.h
+- sass2scss/sass2scss.h
 
 ### Unit Test Requirements
 
