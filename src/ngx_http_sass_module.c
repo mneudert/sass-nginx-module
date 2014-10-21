@@ -10,22 +10,21 @@ typedef struct {
     ngx_str_t   image_path;
     ngx_str_t   include_paths;
     ngx_uint_t  output_style;
-    ngx_uint_t  source_comments;
+    ngx_flag_t  source_comments;
 } ngx_http_sass_loc_conf_t;
 
 
 static ngx_int_t ngx_http_sass_init(ngx_conf_t *cf);
 static void *ngx_http_sass_create_loc_conf(ngx_conf_t *cf);
 static char *ngx_http_sass_merge_loc_conf(ngx_conf_t *cf,void *parent, void *child);
-static char *ngx_http_sass_comments_value(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 static char *ngx_http_sass_error_log_value(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 static char *ngx_http_sass_output_value(ngx_conf_t *cf, ngx_command_t *cmd, void *conf);
 
 
 static ngx_command_t  ngx_http_sass_commands[] = {
     { ngx_string("sass_comments"),
-      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_TAKE1,
-      ngx_http_sass_comments_value,
+      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_FLAG,
+      ngx_conf_set_flag_slot,
       NGX_HTTP_LOC_CONF_OFFSET,
       offsetof(ngx_http_sass_loc_conf_t, source_comments),
       NULL },
@@ -229,7 +228,7 @@ ngx_http_sass_create_loc_conf(ngx_conf_t *cf)
     conf->enable          = NGX_CONF_UNSET;
     conf->error_log       = NGX_LOG_ERR;
     conf->output_style    = SASS_STYLE_NESTED;
-    conf->source_comments = SASS_SOURCE_COMMENTS_NONE;
+    conf->source_comments = NGX_CONF_UNSET;
 
     return conf;
 }
@@ -245,7 +244,7 @@ ngx_http_sass_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
     ngx_conf_merge_str_value(conf->image_path, prev->image_path, "");
     ngx_conf_merge_str_value(conf->include_paths, prev->include_paths, "");
     ngx_conf_merge_uint_value(conf->output_style, prev->output_style, SASS_STYLE_NESTED);
-    ngx_conf_merge_uint_value(conf->source_comments, prev->source_comments, SASS_SOURCE_COMMENTS_NONE);
+    ngx_conf_merge_off_value(conf->source_comments, prev->source_comments, 0);
 
     return NGX_CONF_OK;
 }
@@ -271,39 +270,6 @@ ngx_http_sass_error_log_value(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
     ngx_conf_log_error(
         NGX_LOG_EMERG, cf, 0,
         "invalid sass_error_log parameter \"%V\"", &value[1]
-    );
-
-    return NGX_CONF_ERROR;
-}
-
-
-static char *
-ngx_http_sass_comments_value(ngx_conf_t *cf, ngx_command_t *cmd, void *conf)
-{
-    ngx_str_t  *value;
-
-    ngx_http_sass_loc_conf_t *slcf = conf;
-
-    value = cf->args->elts;
-
-    if (0 == ngx_strcmp(value[1].data, "none")) {
-        slcf->source_comments = SASS_SOURCE_COMMENTS_NONE;
-        return NGX_CONF_OK;
-    }
-
-    if (0 == ngx_strcmp(value[1].data, "default")) {
-        slcf->source_comments = SASS_SOURCE_COMMENTS_DEFAULT;
-        return NGX_CONF_OK;
-    }
-
-    if (0 == ngx_strcmp(value[1].data, "map")) {
-        slcf->source_comments = SASS_SOURCE_COMMENTS_MAP;
-        return NGX_CONF_OK;
-    }
-
-    ngx_conf_log_error(
-        NGX_LOG_EMERG, cf, 0,
-        "invalid sass_comments parameter \"%V\"", &value[1]
     );
 
     return NGX_CONF_ERROR;

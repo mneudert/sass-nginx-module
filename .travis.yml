@@ -8,17 +8,15 @@ install:
   - mkdir ./vendor && cd ./vendor
 
   - wget http://nginx.org/download/nginx-1.6.0.tar.gz && tar -xf nginx-1.6.0.tar.gz
-  - wget https://github.com/openresty/lua-nginx-module/archive/v0.9.7.tar.gz -O lua-nginx-module-0.9.7.tar.gz && tar -xf lua-nginx-module-0.9.7.tar.gz
-  - wget https://github.com/simpl/ngx_devel_kit/archive/v0.2.19.tar.gz -O ngx-devel-kit-0.2.19.tar.gz && tar -xf ngx-devel-kit-0.2.19.tar.gz
-  - git clone https://github.com/sass/libsass.git --recursive
 
-  - cd ./libsass
-  - git checkout v2.0
+  - wget https://github.com/openresty/lua-nginx-module/archive/v0.9.7.tar.gz -O lua-nginx-module-0.9.7.tar.gz && tar -xf lua-nginx-module-0.9.7.tar.gz
+  - wget https://github.com/sass/libsass/archive/3.0.tar.gz -O libsass-3.0.tar.gz && tar -xf libsass-3.0.tar.gz
+  - wget https://github.com/simpl/ngx_devel_kit/archive/v0.2.19.tar.gz -O ngx-devel-kit-0.2.19.tar.gz && tar -xf ngx-devel-kit-0.2.19.tar.gz
+
+  - cd ./libsass-3.0
   - sudo make install install-shared
   - sudo ldconfig
-  - sudo cp sass.h sass_interface.h /usr/include/
-  - sudo mkdir /usr/include/sass2scss
-  - sudo cp sass2scss/sass2scss.h /usr/include/sass2scss
+  - sudo cp sass.h sass_interface.h sass2scss.h /usr/include/
 
   - cd ../nginx-1.6.0
   - export LUAJIT_LIB=/usr/lib/x86_64-linux-gnu/

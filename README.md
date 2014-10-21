@@ -21,11 +21,13 @@ Use with caution!
 
 ### Prerequisites
 
-To be able to compile this module you need [libsass](https://github.com/sass/libsass)
-available. The version used in the travis environment is `v2.0`, the use of a
-different version can result in unexpected behaviour.
+To be able to compile this module you need
+[libsass](https://github.com/sass/libsass) available. For a list of tested, and
+therefore more or less supported, combinations of libsass and nginx versions
+please refer to the travis environment in `.travis.yml`. Using different
+versions can result in unexpected behaviour or won't work at all.
 
-Also it has to be recognized by ldconfig:
+Also ldconfig has to find the library:
 
 ```shell
 ldconfig -p | grep "libsass"
@@ -44,7 +46,7 @@ During compilation the following header files have to be available:
 
 - sass.h
 - sass_interface.h
-- sass2scss/sass2scss.h
+- sass2scss.h
 
 ### Unit Test Requirements
 
@@ -130,7 +132,6 @@ Output Style:
 Source Comments:
 
     location / {
-        sass_comments  none;    # default
-        sass_comments  default;
-        sass_comments  map;
+        sass_comments  off;    # default
+        sass_comments  on;
     }
