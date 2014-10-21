@@ -1,5 +1,5 @@
 language: perl
-perl: 5.19
+perl: 5.20
 
 before_install:
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
