@@ -2,7 +2,11 @@ language: perl
 perl: 5.19
 
 before_install:
-  - sudo apt-get install libluajit-5.1-dev libluajit-5.1.2
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq libluajit-5.1-dev libluajit-5.1.2
+  - sudo apt-get install -qq gcc-4.8 g++-4.8
+  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 90
 
 install:
   - mkdir ./vendor && cd ./vendor
