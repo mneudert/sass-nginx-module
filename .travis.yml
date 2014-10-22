@@ -13,7 +13,7 @@ install:
 
   - wget http://nginx.org/download/nginx-1.6.0.tar.gz && tar -xf nginx-1.6.0.tar.gz
 
-  - wget https://github.com/openresty/lua-nginx-module/archive/v0.9.7.tar.gz -O lua-nginx-module-0.9.7.tar.gz && tar -xf lua-nginx-module-0.9.7.tar.gz
+  - wget https://github.com/openresty/lua-nginx-module/archive/v0.9.12.tar.gz -O lua-nginx-module-0.9.12.tar.gz && tar -xf lua-nginx-module-0.9.12.tar.gz
   - wget https://github.com/sass/libsass/archive/3.0.tar.gz -O libsass-3.0.tar.gz && tar -xf libsass-3.0.tar.gz
   - wget https://github.com/simpl/ngx_devel_kit/archive/v0.2.19.tar.gz -O ngx-devel-kit-0.2.19.tar.gz && tar -xf ngx-devel-kit-0.2.19.tar.gz
 
@@ -25,7 +25,7 @@ install:
   - cd ../nginx-1.6.0
   - export LUAJIT_LIB=/usr/lib/x86_64-linux-gnu/
   - export LUAJIT_INC=/usr/include/luajit-2.0/
-  - ./configure --add-module=../ngx_devel_kit-0.2.19 --add-module=../lua-nginx-module-0.9.7 --add-module=../../
+  - ./configure --add-module=../ngx_devel_kit-0.2.19 --add-module=../lua-nginx-module-0.9.12 --add-module=../../
   - sudo make install
   - export PATH=$PATH:/usr/local/nginx/sbin
 
