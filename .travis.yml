@@ -1,6 +1,10 @@
 language: perl
 perl: 5.20
 
+env:
+  - VER_NGINX=1.6.2
+  - VER_NGINX=1.7.6
+
 before_install:
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
   - sudo apt-get update -qq
@@ -11,7 +15,7 @@ before_install:
 install:
   - mkdir ./vendor && cd ./vendor
 
-  - wget http://nginx.org/download/nginx-1.6.0.tar.gz && tar -xf nginx-1.6.0.tar.gz
+  - wget "http://nginx.org/download/nginx-${VER_NGINX}.tar.gz" && tar -xf "nginx-${VER_NGINX}.tar.gz"
 
   - wget https://github.com/openresty/lua-nginx-module/archive/v0.9.12.tar.gz -O lua-nginx-module-0.9.12.tar.gz && tar -xf lua-nginx-module-0.9.12.tar.gz
   - wget https://github.com/sass/libsass/archive/3.0.tar.gz -O libsass-3.0.tar.gz && tar -xf libsass-3.0.tar.gz
@@ -22,7 +26,7 @@ install:
   - sudo ldconfig
   - sudo cp sass.h sass_interface.h sass2scss.h /usr/include/
 
-  - cd ../nginx-1.6.0
+  - cd "../nginx-${VER_NGINX}"
   - export LUAJIT_LIB=/usr/lib/x86_64-linux-gnu/
   - export LUAJIT_INC=/usr/include/luajit-2.0/
   - ./configure --add-module=../ngx_devel_kit-0.2.19 --add-module=../lua-nginx-module-0.9.12 --add-module=../../
