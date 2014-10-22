@@ -17,7 +17,7 @@ install:
 
   - wget "http://nginx.org/download/nginx-${VER_NGINX}.tar.gz" && tar -xf "nginx-${VER_NGINX}.tar.gz"
 
-  - wget https://github.com/openresty/lua-nginx-module/archive/v0.9.12.tar.gz -O lua-nginx-module-0.9.12.tar.gz && tar -xf lua-nginx-module-0.9.12.tar.gz
+  - wget https://github.com/openresty/lua-nginx-module/archive/v0.9.13rc1.tar.gz -O lua-nginx-module-0.9.13rc1.tar.gz && tar -xf lua-nginx-module-0.9.13rc1.tar.gz
   - wget https://github.com/sass/libsass/archive/3.0.tar.gz -O libsass-3.0.tar.gz && tar -xf libsass-3.0.tar.gz
   - wget https://github.com/simpl/ngx_devel_kit/archive/v0.2.19.tar.gz -O ngx-devel-kit-0.2.19.tar.gz && tar -xf ngx-devel-kit-0.2.19.tar.gz
 
@@ -29,7 +29,7 @@ install:
   - cd "../nginx-${VER_NGINX}"
   - export LUAJIT_LIB=/usr/lib/x86_64-linux-gnu/
   - export LUAJIT_INC=/usr/include/luajit-2.0/
-  - ./configure --add-module=../ngx_devel_kit-0.2.19 --add-module=../lua-nginx-module-0.9.12 --add-module=../../
+  - ./configure --add-module=../ngx_devel_kit-0.2.19 --add-module=../lua-nginx-module-0.9.13rc1 --add-module=../../
   - sudo make install
   - export PATH=$PATH:/usr/local/nginx/sbin
 
