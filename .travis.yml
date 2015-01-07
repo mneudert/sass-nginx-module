@@ -18,13 +18,13 @@ install:
   - wget "http://nginx.org/download/nginx-${VER_NGINX}.tar.gz" && tar -xf "nginx-${VER_NGINX}.tar.gz"
 
   - wget https://github.com/openresty/lua-nginx-module/archive/v0.9.13rc1.tar.gz -O lua-nginx-module-0.9.13rc1.tar.gz && tar -xf lua-nginx-module-0.9.13rc1.tar.gz
-  - wget https://github.com/sass/libsass/archive/3.0.tar.gz -O libsass-3.0.tar.gz && tar -xf libsass-3.0.tar.gz
+  - wget https://github.com/sass/libsass/archive/3.1.0.tar.gz -O libsass-3.1.0.tar.gz && tar -xf libsass-3.1.0.tar.gz
   - wget https://github.com/simpl/ngx_devel_kit/archive/v0.2.19.tar.gz -O ngx-devel-kit-0.2.19.tar.gz && tar -xf ngx-devel-kit-0.2.19.tar.gz
 
-  - cd ./libsass-3.0
+  - cd ./libsass-3.1.0
   - sudo make install install-shared
   - sudo ldconfig
-  - sudo cp sass.h sass_interface.h sass2scss.h /usr/include/
+  - sudo cp sass.h sass_functions.h sass_interface.h sass_values.h /usr/include/
 
   - cd "../nginx-${VER_NGINX}"
   - export LUAJIT_LIB=/usr/lib/x86_64-linux-gnu/

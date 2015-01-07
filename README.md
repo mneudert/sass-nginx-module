@@ -45,8 +45,9 @@ local libsass installation before proceeding.
 During compilation the following header files have to be available:
 
 - sass.h
+- sass_functions.h
 - sass_interface.h
-- sass2scss.h
+- sass_values.h
 
 ### Unit Test Requirements
 
