@@ -8,8 +8,7 @@ your IDE while still using the power of Sass while developing your websites.
 
 ### Note
 
-This module is highly experimental and has not been tested in any real
-environment yet.
+This module is experimental and only been used in development environments.
 
 You can, and should, expect some weird bugs from serving unparsed files up to
 completely deactivating your vhost.
@@ -100,39 +99,49 @@ have to change your application to load different files.
 
 Error Log Level:
 
-    location / {
-        # same as regular nginx error log
-        sass_error_log  error;  #default
-    }
+```nginx
+location / {
+    # same as regular nginx error log
+    sass_error_log  error;  #default
+}
+```
 
 Image Path:
 
-    location / {
-        sass_image_path  "/path/to/something";
-    }
+```nginx
+location / {
+    sass_image_path  "/path/to/something";
+}
+```
 
 Include Paths:
 
-    location / {
-        # windows (semicolon as path sep)
-        sass_include_paths  "/some/dir;/another/dir";
+```nginx
+location / {
+    # windows (semicolon as path sep)
+    sass_include_paths  "/some/dir;/another/dir";
 
-        # everywhere else (colon as path sep)
-        sass_include_paths  "/some/dir:/another/dir";
-    }
+    # everywhere else (colon as path sep)
+    sass_include_paths  "/some/dir:/another/dir";
+}
+```
 
 Output Style:
 
-    location / {
-        sass_output  nested;     # default
-        sass_output  expanded;
-        sass_output  compact;
-        sass_output  compressed;
-    }
+```nginx
+location / {
+    sass_output  nested;     # default
+    sass_output  expanded;
+    sass_output  compact;
+    sass_output  compressed;
+}
+```
 
 Source Comments:
 
-    location / {
-        sass_comments  off;    # default
-        sass_comments  on;
-    }
+```nginx
+location / {
+    sass_comments  off;    # default
+    sass_comments  on;
+}
+```
