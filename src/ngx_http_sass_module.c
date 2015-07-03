@@ -7,7 +7,6 @@
 typedef struct {
     ngx_flag_t  enable;
     ngx_uint_t  error_log;
-    ngx_str_t   image_path;
     ngx_str_t   include_paths;
     ngx_uint_t  output_style;
     ngx_flag_t  source_comments;
@@ -41,13 +40,6 @@ static ngx_command_t  ngx_http_sass_commands[] = {
       ngx_http_sass_error_log_value,
       NGX_HTTP_LOC_CONF_OFFSET,
       offsetof(ngx_http_sass_loc_conf_t, error_log),
-      NULL },
-
-    { ngx_string("sass_image_path"),
-      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_TAKE1,
-      ngx_conf_set_str_slot,
-      NGX_HTTP_LOC_CONF_OFFSET,
-      offsetof(ngx_http_sass_loc_conf_t, image_path),
       NULL },
 
     { ngx_string("sass_include_paths"),
@@ -153,7 +145,6 @@ ngx_http_sass_handler(ngx_http_request_t *r)
 
     options.output_style    = clcf->output_style;
     options.source_comments = clcf->source_comments;
-    options.image_path      = (char *) clcf->image_path.data;
     options.include_paths   = (char *) clcf->include_paths.data;
 
     ctx             = sass_new_file_context();
@@ -241,7 +232,6 @@ ngx_http_sass_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
     ngx_http_sass_loc_conf_t *conf = child;
 
     ngx_conf_merge_off_value(conf->enable, prev->enable, 0);
-    ngx_conf_merge_str_value(conf->image_path, prev->image_path, "");
     ngx_conf_merge_str_value(conf->include_paths, prev->include_paths, "");
     ngx_conf_merge_uint_value(conf->output_style, prev->output_style, SASS_STYLE_NESTED);
     ngx_conf_merge_off_value(conf->source_comments, prev->source_comments, 0);

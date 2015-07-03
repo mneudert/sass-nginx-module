@@ -47,6 +47,7 @@ During compilation the following header files have to be available:
 - sass_functions.h
 - sass_interface.h
 - sass_values.h
+- sass_version.h
 
 ### Unit Test Requirements
 
@@ -103,14 +104,6 @@ Error Log Level:
 location / {
     # same as regular nginx error log
     sass_error_log  error;  #default
-}
-```
-
-Image Path:
-
-```nginx
-location / {
-    sass_image_path  "/path/to/something";
 }
 ```
 
