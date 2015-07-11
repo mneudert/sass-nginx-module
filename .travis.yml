@@ -1,10 +1,16 @@
 language: perl
-perl: 5.20
+perl:     5.20
+sudo:     required
 
 env:
-  - VER_NGINX=1.6.3
-  - VER_NGINX=1.8.0
-  - VER_NGINX=1.9.2
+  global:
+    - VER_LIBSASS=3.2.5
+    - VER_LUA_NGINX=0.9.16
+    - VER_NGX_DEVEL=0.2.19
+  matrix:
+    - VER_NGINX=1.6.3
+    - VER_NGINX=1.8.0
+    - VER_NGINX=1.9.2
 
 before_install:
   - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
@@ -16,13 +22,13 @@ before_install:
 install:
   - mkdir ./vendor && cd ./vendor
 
-  - wget "http://nginx.org/download/nginx-${VER_NGINX}.tar.gz" && tar -xf "nginx-${VER_NGINX}.tar.gz"
+  - wget "http://nginx.org/download/nginx-${VER_NGINX}.tar.gz" -O nginx.tar.gz && tar -xf nginx.tar.gz
 
-  - wget https://github.com/openresty/lua-nginx-module/archive/v0.9.13rc1.tar.gz -O lua-nginx-module-0.9.13rc1.tar.gz && tar -xf lua-nginx-module-0.9.13rc1.tar.gz
-  - wget https://github.com/sass/libsass/archive/3.2.5.tar.gz -O libsass-3.2.5.tar.gz && tar -xf libsass-3.2.5.tar.gz
-  - wget https://github.com/simpl/ngx_devel_kit/archive/v0.2.19.tar.gz -O ngx-devel-kit-0.2.19.tar.gz && tar -xf ngx-devel-kit-0.2.19.tar.gz
+  - wget "https://github.com/openresty/lua-nginx-module/archive/v${VER_LUA_NGINX}.tar.gz" -O lua-nginx-module.tar.gz && tar -xf lua-nginx-module.tar.gz
+  - wget "https://github.com/sass/libsass/archive/${VER_LIBSASS}.tar.gz" -O libsass.tar.gz && tar -xf libsass.tar.gz
+  - wget "https://github.com/simpl/ngx_devel_kit/archive/v${VER_NGX_DEVEL}.tar.gz" -O ngx-devel-kit.tar.gz && tar -xf ngx-devel-kit.tar.gz
 
-  - cd ./libsass-3.2.5
+  - cd "./libsass-${VER_LIBSASS}"
   - sudo make install install-shared
   - sudo ldconfig
   - sudo cp sass.h sass_functions.h sass_interface.h sass_values.h sass_version.h /usr/include/
@@ -30,7 +36,7 @@ install:
   - cd "../nginx-${VER_NGINX}"
   - export LUAJIT_LIB=/usr/lib/x86_64-linux-gnu/
   - export LUAJIT_INC=/usr/include/luajit-2.0/
-  - ./configure --add-module=../ngx_devel_kit-0.2.19 --add-module=../lua-nginx-module-0.9.13rc1 --add-module=../../
+  - ./configure --add-module="../ngx_devel_kit-${VER_NGX_DEVEL}" --add-module="../lua-nginx-module-${VER_LUA_NGINX}" --add-module=../../
   - sudo make install
   - export PATH=$PATH:/usr/local/nginx/sbin
 
