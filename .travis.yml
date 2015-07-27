@@ -1,6 +1,16 @@
 language: perl
 perl:     5.20
-sudo:     required
+sudo:     false
+
+addons:
+  apt:
+    sources:
+      - ubuntu-toolchain-r-test
+    packages:
+      - gcc-4.8
+      - g++-4.8
+      - libluajit-5.1-dev
+      - libluajit-5.1.2
 
 env:
   global:
@@ -12,33 +22,24 @@ env:
     - VER_NGINX=1.8.0
     - VER_NGINX=1.9.2
 
-before_install:
-  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
-  - sudo apt-get update -qq
-  - sudo apt-get install -qq libluajit-5.1-dev libluajit-5.1.2
-  - sudo apt-get install -qq gcc-4.8 g++-4.8
-  - sudo update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-4.8 90
-
 install:
   - mkdir ./vendor && cd ./vendor
 
   - wget "http://nginx.org/download/nginx-${VER_NGINX}.tar.gz" -O nginx.tar.gz && tar -xf nginx.tar.gz
-
   - wget "https://github.com/openresty/lua-nginx-module/archive/v${VER_LUA_NGINX}.tar.gz" -O lua-nginx-module.tar.gz && tar -xf lua-nginx-module.tar.gz
   - wget "https://github.com/sass/libsass/archive/${VER_LIBSASS}.tar.gz" -O libsass.tar.gz && tar -xf libsass.tar.gz
   - wget "https://github.com/simpl/ngx_devel_kit/archive/v${VER_NGX_DEVEL}.tar.gz" -O ngx-devel-kit.tar.gz && tar -xf ngx-devel-kit.tar.gz
 
   - cd "./libsass-${VER_LIBSASS}"
-  - sudo make install install-shared
-  - sudo ldconfig
-  - sudo cp sass.h sass_functions.h sass_interface.h sass_values.h sass_version.h /usr/include/
+  - make shared
 
-  - cd "../nginx-${VER_NGINX}"
+  - cd "${TRAVIS_BUILD_DIR}/vendor/nginx-${VER_NGINX}"
   - export LUAJIT_LIB=/usr/lib/x86_64-linux-gnu/
   - export LUAJIT_INC=/usr/include/luajit-2.0/
-  - ./configure --add-module="../ngx_devel_kit-${VER_NGX_DEVEL}" --add-module="../lua-nginx-module-${VER_LUA_NGINX}" --add-module=../../
-  - sudo make install
-  - export PATH=$PATH:/usr/local/nginx/sbin
+  - ./configure --add-module="${TRAVIS_BUILD_DIR}/vendor/ngx_devel_kit-${VER_NGX_DEVEL}" --add-module="${TRAVIS_BUILD_DIR}/vendor/lua-nginx-module-${VER_LUA_NGINX}" --add-module="${TRAVIS_BUILD_DIR}" --with-cc-opt="-I ${TRAVIS_BUILD_DIR}/vendor/libsass-${VER_LIBSASS}" --with-ld-opt="-L ${TRAVIS_BUILD_DIR}/vendor/libsass-${VER_LIBSASS}/lib"
+  - make
+  - export PATH="$PATH:${TRAVIS_BUILD_DIR}/vendor/nginx-${VER_NGINX}/objs"
+  - export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${TRAVIS_BUILD_DIR}/vendor/libsass-${VER_LIBSASS}/lib"
 
   - cpanm -v --notest Test::Nginx
 
