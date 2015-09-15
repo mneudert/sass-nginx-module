@@ -25,6 +25,9 @@ env:
 before_install:
   - git submodule init
   - git submodule update
+  - cd "${TRAVIS_BUILD_DIR}/lib/libsass"
+  - make shared
+
 
 install:
   - mkdir ./vendor && cd ./vendor
@@ -39,6 +42,8 @@ install:
   - ./configure --add-module="${TRAVIS_BUILD_DIR}/vendor/ngx_devel_kit-${VER_NGX_DEVEL}" --add-module="${TRAVIS_BUILD_DIR}/vendor/lua-nginx-module-${VER_LUA_NGINX}" --add-module="${TRAVIS_BUILD_DIR}"
   - make
   - export PATH="$PATH:${TRAVIS_BUILD_DIR}/vendor/nginx-${VER_NGINX}/objs"
+  - export LD_LIBRARY_PATH="${TRAVIS_BUILD_DIR}/lib/libsass"
+
 
   - cpanm -v --notest Test::Nginx
 
