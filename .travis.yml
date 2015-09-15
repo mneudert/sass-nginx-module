@@ -25,16 +25,15 @@ env:
 before_install:
   - git submodule init
   - git submodule update
-  - cd "${TRAVIS_BUILD_DIR}/lib/libsass"
-  - make shared
-
 
 install:
   - mkdir ./vendor && cd ./vendor
-
   - wget "http://nginx.org/download/nginx-${VER_NGINX}.tar.gz" -O nginx.tar.gz && tar -xf nginx.tar.gz
   - wget "https://github.com/openresty/lua-nginx-module/archive/v${VER_LUA_NGINX}.tar.gz" -O lua-nginx-module.tar.gz && tar -xf lua-nginx-module.tar.gz
   - wget "https://github.com/simpl/ngx_devel_kit/archive/v${VER_NGX_DEVEL}.tar.gz" -O ngx-devel-kit.tar.gz && tar -xf ngx-devel-kit.tar.gz
+
+  - cd "${TRAVIS_BUILD_DIR}/lib/libsass"
+  - make shared
 
   - cd "${TRAVIS_BUILD_DIR}/vendor/nginx-${VER_NGINX}"
   - export LUAJIT_LIB=/usr/lib/x86_64-linux-gnu/
