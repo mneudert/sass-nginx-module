@@ -1,13 +1,14 @@
 ngx_feature="SASS module"
-ngx_feature_name="SASS realtime compiler"
-ngx_feature_run=yes
+ngx_feature_name=
+ngx_feature_run=no
 ngx_feature_incs=
 ngx_feature_path=
 ngx_feature_libs=
 ngx_feature_test=
 
-ngx_addon_name=ngx_sass_module
+ngx_addon_name=ngx_http_sass_module
 
+CORE_LIBS="$CORE_LIBS -lsass"
 CORE_INCS="$CORE_INCS $ngx_addon_dir/lib/libsass"
-HTTP_AUX_FILTER_MODULES="$HTTP_AUX_FILTER_MODULES ngx_sass_module"
-NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/src/ngx_sass_module.c"
+HTTP_AUX_FILTER_MODULES="$HTTP_AUX_FILTER_MODULES ngx_http_sass_module"
+NGX_ADDON_SRCS="$NGX_ADDON_SRCS $ngx_addon_dir/src/ngx_http_sass_module.c"
