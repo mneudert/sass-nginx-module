@@ -244,6 +244,7 @@ ngx_http_sass_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
     ngx_conf_merge_off_value(conf->omit_map_url, prev->omit_map_url, 0);
     ngx_conf_merge_off_value(conf->map_contents, prev->map_contents, 0); 
     ngx_conf_merge_str_value(conf->map_root, prev->map_root, "");
+    ngx_conf_merge_str_value(conf->map_path, prev->map_path, "");
 
     return NGX_CONF_OK;
 }
