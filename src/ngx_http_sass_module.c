@@ -10,6 +10,13 @@ typedef struct {
     ngx_str_t   include_paths;
     ngx_uint_t  output_style;
     ngx_flag_t  source_comments;
+    ngx_uint_t  precision;
+    ngx_flag_t  map_embed;
+    ngx_flag_t  omit_map_url;
+    ngx_flag_t  map_contents;
+    ngx_str_t   map_root;
+    ngx_str_t   map_path;
+
 } ngx_http_sass_loc_conf_t;
 
 
@@ -238,7 +245,7 @@ ngx_http_sass_create_loc_conf(ngx_conf_t *cf)
     conf->source_comments = NGX_CONF_UNSET;
     conf->map_embed       = NGX_CONF_UNSET;
     conf->omit_map_url    = NGX_CONF_UNSET;
-    conf->map_contents    = NGX_CONF_UNSET;         
+    conf->map_contents    = NGX_CONF_UNSET;
     conf->map_root        = NGX_CONF_UNSET;
     conf->map_path        = NGX_CONF_UNSET;
 
@@ -259,7 +266,7 @@ ngx_http_sass_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
     ngx_conf_merge_off_value(conf->source_comments, prev->source_comments, 0);
     ngx_conf_merge_off_value(conf->map_embed, prev->map_embed, 0);
     ngx_conf_merge_off_value(conf->omit_map_url, prev->omit_map_url, 0);
-    ngx_conf_merge_off_value(conf->map_contents, prev->map_contents, 0); 
+    ngx_conf_merge_off_value(conf->map_contents, prev->map_contents, 0);
     ngx_conf_merge_str_value(conf->map_root, prev->map_root, "");
     ngx_conf_merge_str_value(conf->map_path, prev->map_path, "");
 
