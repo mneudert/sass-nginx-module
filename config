@@ -1,6 +1,6 @@
 ngx_feature="SASS module"
 ngx_feature_name="SASS compiler module"
-ngx_feature_run=yes
+ngx_feature_run=no
 ngx_feature_incs=
 ngx_feature_path=
 ngx_feature_libs=
