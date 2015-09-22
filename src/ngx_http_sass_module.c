@@ -220,6 +220,11 @@ ngx_http_sass_create_loc_conf(ngx_conf_t *cf)
     conf->error_log       = NGX_LOG_ERR;
     conf->output_style    = SASS_STYLE_NESTED;
     conf->source_comments = NGX_CONF_UNSET;
+    conf->map_embed       = NGX_CONF_UNSET;
+    conf->omit_map_url    = NGX_CONF_UNSET;
+    conf->map_contents    = NGX_CONF_UNSET;         
+    conf->map_root        = NGX_CONF_UNSET;
+    conf->map_path        = NGX_CONF_UNSET;
 
     return conf;
 }
@@ -235,6 +240,10 @@ ngx_http_sass_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
     ngx_conf_merge_str_value(conf->include_paths, prev->include_paths, "");
     ngx_conf_merge_uint_value(conf->output_style, prev->output_style, SASS_STYLE_NESTED);
     ngx_conf_merge_off_value(conf->source_comments, prev->source_comments, 0);
+    ngx_conf_merge_off_value(conf->map_embed, prev->map_embed, 0);
+    ngx_conf_merge_off_value(conf->omit_map_url, prev->omit_map_url, 0);
+    ngx_conf_merge_off_value(conf->map_contents, prev->map_contents, 0); 
+    ngx_conf_merge_str_value(conf->map_root, prev->map_root, "");
 
     return NGX_CONF_OK;
 }
