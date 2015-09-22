@@ -49,6 +49,20 @@ static ngx_command_t  ngx_http_sass_commands[] = {
       offsetof(ngx_http_sass_loc_conf_t, include_paths),
       NULL },
 
+     { ngx_string("sass_precision"),
+      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_TAKE1,
+      ngx_conf_set_str_slot,
+      NGX_HTTP_LOC_CONF_OFFSET,
+      offsetof(ngx_http_sass_loc_conf_t, precision),
+      NULL },
+
+    { ngx_string("sass_map_path"),
+      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_TAKE1,
+      ngx_conf_set_str_slot,
+      NGX_HTTP_LOC_CONF_OFFSET,
+      offsetof(ngx_http_sass_loc_conf_t, map_path),
+      NULL },
+
     { ngx_string("sass_output"),
       NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_TAKE1,
       ngx_http_sass_output_value,
@@ -146,6 +160,7 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     options.output_style    = clcf->output_style;
     options.source_comments = clcf->source_comments;
     options.include_paths   = (char *) clcf->include_paths.data;
+    options.map_path   = (char *) clcf->map_path.data;
 
     ctx             = sass_new_file_context();
     ctx->options    = options;
@@ -219,6 +234,7 @@ ngx_http_sass_create_loc_conf(ngx_conf_t *cf)
     conf->enable          = NGX_CONF_UNSET;
     conf->error_log       = NGX_LOG_ERR;
     conf->output_style    = SASS_STYLE_NESTED;
+    conf->precision       = NGX_CONF_UNSET;
     conf->source_comments = NGX_CONF_UNSET;
     conf->map_embed       = NGX_CONF_UNSET;
     conf->omit_map_url    = NGX_CONF_UNSET;
@@ -239,6 +255,7 @@ ngx_http_sass_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
     ngx_conf_merge_off_value(conf->enable, prev->enable, 0);
     ngx_conf_merge_str_value(conf->include_paths, prev->include_paths, "");
     ngx_conf_merge_uint_value(conf->output_style, prev->output_style, SASS_STYLE_NESTED);
+    ngx_conf_merge_uint_value(conf->precision, prev->precision, 0);
     ngx_conf_merge_off_value(conf->source_comments, prev->source_comments, 0);
     ngx_conf_merge_off_value(conf->map_embed, prev->map_embed, 0);
     ngx_conf_merge_off_value(conf->omit_map_url, prev->omit_map_url, 0);
