@@ -245,8 +245,6 @@ ngx_http_sass_create_loc_conf(ngx_conf_t *cf)
     conf->map_embed       = NGX_CONF_UNSET;
     conf->omit_map_url    = NGX_CONF_UNSET;
     conf->map_contents    = NGX_CONF_UNSET;
-    conf->map_root        = NGX_CONF_UNSET;
-    conf->map_path        = NGX_CONF_UNSET;
 
     return conf;
 }
