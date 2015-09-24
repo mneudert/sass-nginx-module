@@ -20,15 +20,10 @@ Use with caution!
 
 ### Prerequisites
 
-Libsass has been moved into core include libs so shouldn't hopefully need LDFLAGS to run.
+Libsass: which has been included in this build. Remember to update it using
 
-During compilation the following header files have to be available:
-
-- sass.h
-- sass_functions.h
-- sass_interface.h
-- sass_values.h
-- sass_version.h
+    $ git submodule init
+    $ git submodule update
 
 ### Unit Test Requirements
 
