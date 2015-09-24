@@ -119,3 +119,13 @@ location / {
     sass_comments  on;
 }
 ```
+
+Precision:
+
+```nginx
+location / {
+
+    precision:     5;       #default
+    precision:     10;
+}
+```
