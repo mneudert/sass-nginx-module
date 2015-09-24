@@ -166,7 +166,7 @@ ngx_http_sass_handler(ngx_http_request_t *r)
 
     options.output_style    = clcf->output_style;
     options.source_comments = clcf->source_comments;
-    options.precision = (int *) clcf->precision;
+    options.precision = (int) clcf->precision;
     options.include_paths   = (char *) clcf->include_paths.data;
 
     ctx             = sass_new_file_context();
