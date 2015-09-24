@@ -166,7 +166,7 @@ ngx_http_sass_handler(ngx_http_request_t *r)
 
     options.output_style    = clcf->output_style;
     options.source_comments = clcf->source_comments;
-    options.precision = (int *) clcf->precision.data;
+    options.precision = (int *) clcf->precision;
     options.include_paths   = (char *) clcf->include_paths.data;
 
     ctx             = sass_new_file_context();
@@ -244,7 +244,6 @@ ngx_http_sass_create_loc_conf(ngx_conf_t *cf)
     conf->precision       = NGX_CONF_UNSET;
     conf->source_comments = NGX_CONF_UNSET;
     conf->source_map_embed    = NGX_CONF_UNSET;
-    conf->omit_source_map_url = NGX_CONF_UNSET;
     conf->source_map_contents = NGX_CONF_UNSET;
 
     return conf;
@@ -263,7 +262,6 @@ ngx_http_sass_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
     ngx_conf_merge_uint_value(conf->precision, prev->precision, 0);
     ngx_conf_merge_off_value(conf->source_comments, prev->source_comments, 0);
     ngx_conf_merge_off_value(conf->source_map_embed, prev->source_map_embed, 0);
-    ngx_conf_merge_off_value(conf->omit_source_map_url, prev->omit_source_map_url, 0);
     ngx_conf_merge_off_value(conf->source_map_contents, prev->source_map_contents, 0);
     ngx_conf_merge_str_value(conf->source_map_root, prev->source_map_root, "");
     ngx_conf_merge_str_value(conf->source_map_file, prev->source_map_file, "");
