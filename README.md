@@ -120,7 +120,7 @@ Precision:
 ```nginx
 location / {
 
-    precision:     5;       #default
-    precision:     10;
+    sass_precision:     5;       #default
+    sass_precision:     10;
 }
 ```
