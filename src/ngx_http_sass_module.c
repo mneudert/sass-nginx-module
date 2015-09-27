@@ -173,14 +173,14 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     options.source_map_embed = clcf->source_map_embed;
     options.source_map_contents = clcf->source_map_contents;
 
-    if (!clcf->source_map_file.empty()) {
-    options.source_map_file = (char) clcf->source_map_file;
+    if (NULL !== clcf->source_map_file) {
+    options.source_map_file = (char *) clcf->source_map_file;
     options.omit_source_map_url = false;
     options.source_map_contents = true;
     }
 
-    if (!clcf->source_map_root.empty()) {
-    options.source_map_root = (char) clcf->source_map_root;
+    if (NULL !== clcf->source_map_root) {
+    options.source_map_root = (char *) clcf->source_map_root;
     }
 
 
