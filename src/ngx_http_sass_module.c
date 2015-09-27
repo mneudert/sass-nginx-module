@@ -174,13 +174,13 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     options.source_map_contents = clcf->source_map_contents;
 
     if (clcf->source_map_file.len > 0) {
-    options.source_map_file = clcf->source_map_file;
+    options.source_map_file = clcf->source_map_file.data;
     options.omit_source_map_url = false;
     options.source_map_contents = true;
     }
 
     if (clcf->source_map_root.len > 0) {
-    options.source_map_root = clcf->source_map_root;
+    options.source_map_root = clcf->source_map_root.data;
     }
 
 
