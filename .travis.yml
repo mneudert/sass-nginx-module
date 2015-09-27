@@ -22,25 +22,32 @@ env:
     - VER_NGINX=1.8.0
     - VER_NGINX=1.9.2
 
+before_install:
+  - git submodule init
+  - git submodule update
+
 install:
   - mkdir ./vendor && cd ./vendor
-
   - wget "http://nginx.org/download/nginx-${VER_NGINX}.tar.gz" -O nginx.tar.gz && tar -xf nginx.tar.gz
   - wget "https://github.com/openresty/lua-nginx-module/archive/v${VER_LUA_NGINX}.tar.gz" -O lua-nginx-module.tar.gz && tar -xf lua-nginx-module.tar.gz
-  - wget "https://github.com/sass/libsass/archive/${VER_LIBSASS}.tar.gz" -O libsass.tar.gz && tar -xf libsass.tar.gz
   - wget "https://github.com/simpl/ngx_devel_kit/archive/v${VER_NGX_DEVEL}.tar.gz" -O ngx-devel-kit.tar.gz && tar -xf ngx-devel-kit.tar.gz
 
-  - cd "./libsass-${VER_LIBSASS}"
+  - cd "${TRAVIS_BUILD_DIR}/lib/libsass"
   - make shared
 
   - cd "${TRAVIS_BUILD_DIR}/vendor/nginx-${VER_NGINX}"
   - export LUAJIT_LIB=/usr/lib/x86_64-linux-gnu/
   - export LUAJIT_INC=/usr/include/luajit-2.0/
-  - ./configure --add-module="${TRAVIS_BUILD_DIR}/vendor/ngx_devel_kit-${VER_NGX_DEVEL}" --add-module="${TRAVIS_BUILD_DIR}/vendor/lua-nginx-module-${VER_LUA_NGINX}" --add-module="${TRAVIS_BUILD_DIR}" --with-cc-opt="-I ${TRAVIS_BUILD_DIR}/vendor/libsass-${VER_LIBSASS}" --with-ld-opt="-L ${TRAVIS_BUILD_DIR}/vendor/libsass-${VER_LIBSASS}/lib"
+  - ./configure --add-module="${TRAVIS_BUILD_DIR}/vendor/ngx_devel_kit-${VER_NGX_DEVEL}" --add-module="${TRAVIS_BUILD_DIR}/vendor/lua-nginx-module-${VER_LUA_NGINX}" --add-module="${TRAVIS_BUILD_DIR}" --with-cc-opt="-I ${TRAVIS_BUILD_DIR}/lib/libsass" --with-ld-opt="-L ${TRAVIS_BUILD_DIR}/lib/libsass/lib"
   - make
   - export PATH="$PATH:${TRAVIS_BUILD_DIR}/vendor/nginx-${VER_NGINX}/objs"
-  - export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${TRAVIS_BUILD_DIR}/vendor/libsass-${VER_LIBSASS}/lib"
+  - export LD_LIBRARY_PATH="${TRAVIS_BUILD_DIR}/lib/libsass/lib"
+
 
   - cpanm -v --notest Test::Nginx
 
 script: cd ${TRAVIS_BUILD_DIR} && prove
+
+notifications:
+    on_success: never
+    on_failure: never

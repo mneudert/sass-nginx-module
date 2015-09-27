@@ -10,6 +10,13 @@ typedef struct {
     ngx_str_t   include_paths;
     ngx_uint_t  output_style;
     ngx_flag_t  source_comments;
+    ngx_uint_t  precision;
+    ngx_flag_t  source_map_embed;
+    ngx_flag_t  omit_source_map_url;
+    ngx_flag_t  source_map_contents;
+    ngx_str_t   source_map_root;
+    ngx_str_t   source_map_file;
+
 } ngx_http_sass_loc_conf_t;
 
 
@@ -47,6 +54,20 @@ static ngx_command_t  ngx_http_sass_commands[] = {
       ngx_conf_set_str_slot,
       NGX_HTTP_LOC_CONF_OFFSET,
       offsetof(ngx_http_sass_loc_conf_t, include_paths),
+      NULL },
+
+     { ngx_string("sass_precision"),
+      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_TAKE1,
+      ngx_conf_set_str_slot,
+      NGX_HTTP_LOC_CONF_OFFSET,
+      offsetof(ngx_http_sass_loc_conf_t, precision),
+      NULL },
+
+    { ngx_string("sass_map_file"),
+      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_TAKE1,
+      ngx_conf_set_str_slot,
+      NGX_HTTP_LOC_CONF_OFFSET,
+      offsetof(ngx_http_sass_loc_conf_t, source_map_file),
       NULL },
 
     { ngx_string("sass_output"),
@@ -145,7 +166,23 @@ ngx_http_sass_handler(ngx_http_request_t *r)
 
     options.output_style    = clcf->output_style;
     options.source_comments = clcf->source_comments;
+    options.precision = (int) clcf->precision;
     options.include_paths   = (char *) clcf->include_paths.data;
+
+    options.omit_source_map_url = clcf->omit_source_map_url;
+    options.source_map_embed = clcf->source_map_embed;
+    options.source_map_contents = clcf->source_map_contents;
+
+    if (clcf->source_map_file.len > 0) {
+    options.source_map_file = (char *) clcf->source_map_file.data;
+    options.omit_source_map_url = false;
+    options.source_map_contents = true;
+    }
+
+    if (clcf->source_map_root.len > 0) {
+    options.source_map_root = (char *) clcf->source_map_root.data;
+    }
+
 
     ctx             = sass_new_file_context();
     ctx->options    = options;
@@ -219,7 +256,11 @@ ngx_http_sass_create_loc_conf(ngx_conf_t *cf)
     conf->enable          = NGX_CONF_UNSET;
     conf->error_log       = NGX_LOG_ERR;
     conf->output_style    = SASS_STYLE_NESTED;
+    conf->precision       = NGX_CONF_UNSET;
     conf->source_comments = NGX_CONF_UNSET;
+    conf->omit_source_map_url = NGX_CONF_UNSET;
+    conf->source_map_embed    = NGX_CONF_UNSET;
+    conf->source_map_contents = NGX_CONF_UNSET;
 
     return conf;
 }
@@ -234,7 +275,13 @@ ngx_http_sass_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
     ngx_conf_merge_off_value(conf->enable, prev->enable, 0);
     ngx_conf_merge_str_value(conf->include_paths, prev->include_paths, "");
     ngx_conf_merge_uint_value(conf->output_style, prev->output_style, SASS_STYLE_NESTED);
+    ngx_conf_merge_uint_value(conf->precision, prev->precision, 5);
     ngx_conf_merge_off_value(conf->source_comments, prev->source_comments, 0);
+    ngx_conf_merge_off_value(conf->omit_source_map_url, prev->omit_source_map_url, 0);
+    ngx_conf_merge_off_value(conf->source_map_embed, prev->source_map_embed, 0);
+    ngx_conf_merge_off_value(conf->source_map_contents, prev->source_map_contents, 0);
+    ngx_conf_merge_str_value(conf->source_map_root, prev->source_map_root, "");
+    ngx_conf_merge_str_value(conf->source_map_file, prev->source_map_file, "");
 
     return NGX_CONF_OK;
 }

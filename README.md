@@ -1,7 +1,7 @@
 # Syntactically Awesome Nginx Module
 
 Providing on-the-fly compiling of [Sass](http://sass-lang.com/) files as an
-nginx module.
+nginx module, soon hopefully with source maps.
 
 Stop thinking about "sass watch" shell processes or the integration features of
 your IDE while still using the power of Sass while developing your websites.
@@ -20,34 +20,10 @@ Use with caution!
 
 ### Prerequisites
 
-To be able to compile this module you need
-[libsass](https://github.com/sass/libsass) available. For a list of tested, and
-therefore more or less supported, combinations of libsass and nginx versions
-please refer to the travis environment in `.travis.yml`. Using different
-versions can result in unexpected behaviour or won't work at all.
+Libsass: which has been included in this build. Remember to update it using
 
-Also ldconfig has to find the library:
-
-```shell
-ldconfig -p | grep "libsass"
-```
-
-If it does not show up try to rebuild the index first using *ldconfig* as
-*root* user and rerun the grep command. Sometimes you need to add the path
-where libsass is installed manually to the list of paths ldconfig is looking
-for libraries in.
-
-This can be done by adding the path to the *$LD\_LIBRARY\_PATH* variable or the
-file */etc/ld.so.conf*. Either way, please ensure the command above finds your
-local libsass installation before proceeding.
-
-During compilation the following header files have to be available:
-
-- sass.h
-- sass_functions.h
-- sass_interface.h
-- sass_values.h
-- sass_version.h
+    $ git submodule init
+    $ git submodule update
 
 ### Unit Test Requirements
 
@@ -136,5 +112,15 @@ Source Comments:
 location / {
     sass_comments  off;    # default
     sass_comments  on;
+}
+```
+
+Precision:
+
+```nginx
+location / {
+
+    sass_precision:     5;       #default
+    sass_precision:     10;
 }
 ```
