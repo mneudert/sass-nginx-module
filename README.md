@@ -89,10 +89,20 @@ make install
 
 ## Configuration
 
-The configuration is pretty straightforward.
+The configuration is pretty straightforward:
 
-Add a new location-block to your local server block similar to the (pretty
-minimal) configuration example you can find in the [etc directory](etc/vhost.conf).
+```nginx
+server {
+    location ~ ^.*\.css$ {
+        sass_compile  on;
+
+        rewrite  ^(.*)\.css$  $1.scss  break;
+    }
+}
+```
+
+Add this location block to your server activates the sass compilation.
+
 Using a rewrite ensures all the magic happens under the hood and you do not
 have to change your application to load different files.
 
@@ -123,10 +133,10 @@ Output Style:
 
 ```nginx
 location / {
-    sass_output  nested;     # default
-    sass_output  expanded;
     sass_output  compact;
     sass_output  compressed;
+    sass_output  expanded;
+    sass_output  nested;     # default
 }
 ```
 
@@ -134,7 +144,7 @@ Source Comments:
 
 ```nginx
 location / {
-    sass_comments  off;    # default
+    sass_comments  off; # default
     sass_comments  on;
 }
 ```
