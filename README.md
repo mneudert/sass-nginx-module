@@ -49,14 +49,6 @@ During compilation the following header files have to be available:
 - sass_values.h
 - sass_version.h
 
-### Unit Test Requirements
-
-The unit tests use [Test::Nginx](http://github.com/agentzh/test-nginx) and Lua.
-
-To be able to run them using `prove` you need to compile nginx with the
-[lua module](https://github.com/openresty/lua-nginx-module) and
-[devel kit module](https://github.com/simpl/ngx_devel_kit).
-
 ### Nginx
 
 Using this module is as easy as recompiling nginx from source:
@@ -148,3 +140,39 @@ location / {
     sass_comments  on;
 }
 ```
+
+
+## Testing
+
+### Prerequisites
+
+The unit tests use [Test::Nginx](http://github.com/agentzh/test-nginx) and Lua.
+
+Please ensure your environment meets the following:
+
+- `prove` (perl) is available
+- `libluajit` is installed
+
+To be able to run them using `prove` (perl).
+
+### Testing Script
+
+If you fulfill the prerequisites you can use the script `./compile_and_test.sh`
+to download, compile and test in on go:
+
+```shell
+VER_LIBSASS=3.2.5 \
+    VER_LUA_NGINX=0.9.16 \
+    VER_NGX_DEVEL=0.2.19 \
+    VER_NGINX=1.9.2 \
+    LUAJIT_LIB=/usr/lib/x86_64-linux-gnu/ \
+    LUAJIT_INC=/usr/include/luajit-2.0/
+    ./compile_and_test.sh
+```
+
+The four passed variables `VER_LIBSASS`, `VER_LUA_NGINX`, `VER_NGX_DEVEL` and
+`VER_NGINX` define the module versions your are using for compilation. If a
+variable is not passed to the script it will be automatically taken from your
+environment. An error messages will be printed if no value is available.
+
+All dependencies will automatically be downloaded to the `./vendor` subfolder.
