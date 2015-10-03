@@ -22,7 +22,7 @@ env:
   matrix:
     - VER_NGINX=1.6.3
     - VER_NGINX=1.8.0
-    - VER_NGINX=1.9.2
+    - VER_NGINX=1.9.5
 
 install: cpanm -v --notest Test::Nginx
 script:  ./compile_and_test.sh
