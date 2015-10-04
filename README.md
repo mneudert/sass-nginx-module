@@ -176,3 +176,9 @@ variable is not passed to the script it will be automatically taken from your
 environment. An error messages will be printed if no value is available.
 
 All dependencies will automatically be downloaded to the `./vendor` subfolder.
+
+
+## License
+
+Licensed under the
+[BSD 2 Clause License](https://opensource.org/licenses/BSD-2-Clause).
