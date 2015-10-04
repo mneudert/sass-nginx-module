@@ -164,9 +164,9 @@ to download, compile and test in on go:
 VER_LIBSASS=3.2.5 \
     VER_LUA_NGINX=0.9.16 \
     VER_NGX_DEVEL=0.2.19 \
-    VER_NGINX=1.9.2 \
+    VER_NGINX=1.9.5 \
     LUAJIT_LIB=/usr/lib/x86_64-linux-gnu/ \
-    LUAJIT_INC=/usr/include/luajit-2.0/
+    LUAJIT_INC=/usr/include/luajit-2.0/ \
     ./compile_and_test.sh
 ```
 
