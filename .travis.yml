@@ -20,7 +20,7 @@ env:
   matrix:
     - VER_NGINX=1.6.3
     - VER_NGINX=1.8.0
-    - VER_NGINX=1.9.2
+    - VER_NGINX=1.9.5
 
 before_install:
   - git submodule init
