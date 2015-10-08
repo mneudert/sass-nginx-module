@@ -177,6 +177,21 @@ environment. An error messages will be printed if no value is available.
 
 All dependencies will automatically be downloaded to the `./vendor` subfolder.
 
+To skip the compilation (and download) step you can pass the `--nocompile` flag:
+
+```shell
+VER_LIBSASS=3.2.5 \
+    VER_LUA_NGINX=0.9.16 \
+    VER_NGX_DEVEL=0.2.19 \
+    VER_NGINX=1.9.5 \
+    LUAJIT_LIB=/usr/lib/x86_64-linux-gnu/ \
+    LUAJIT_INC=/usr/include/luajit-2.0/ \
+    ./compile_and_test.sh --nocompile
+```
+
+Please be aware that (for now) all the variables are still required for the
+script to run.
+
 
 ## License
 
