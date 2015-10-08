@@ -61,7 +61,8 @@ cd "../nginx-${VER_NGINX}"
     --add-module="${moduledir}" \
     --with-cc-opt="-I ${moduledir}/vendor/libsass-${VER_LIBSASS}" \
     --with-ld-opt="-L ${moduledir}/vendor/libsass-${VER_LIBSASS}/lib"
-make
+make || exit $?
+
 
 export PATH="$PATH:${moduledir}/vendor/nginx-${VER_NGINX}/objs"
 export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${moduledir}/vendor/libsass-${VER_LIBSASS}/lib"
