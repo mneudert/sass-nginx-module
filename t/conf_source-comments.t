@@ -16,7 +16,28 @@ run_tests();
 
 __DATA__
 
-=== TEST 1: comments "off"
+=== TEST 1: default comments
+--- config
+    location ~ ^.*\.css$ {
+        root  $TEST_NGINX_FIXTURE_DIR;
+
+        sass_compile  on;
+
+        rewrite  ^(.*)\.css$  $1.scss  break;
+
+        body_filter_by_lua 'ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\\n"';
+    }
+--- request
+    GET /conf_source-comments.css
+--- response_body
+html {
+  background-color: black; }
+
+body {
+  color: white; }
+
+
+=== TEST 2: comments "off"
 --- config
     location ~ ^.*\.css$ {
         root  $TEST_NGINX_FIXTURE_DIR;
@@ -38,8 +59,7 @@ body {
   color: white; }
 
 
-
-=== TEST 2: comments "on"
+=== TEST 3: comments "on"
 --- config
     location ~ ^.*\.css$ {
         root  $TEST_NGINX_FIXTURE_DIR;
@@ -51,5 +71,4 @@ body {
     }
 --- request
     GET /conf_source-comments.css
---- response_body_like
-/* line 1,
+--- response_body_like: /* line 1,
