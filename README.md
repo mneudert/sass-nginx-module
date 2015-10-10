@@ -121,6 +121,15 @@ location / {
 }
 ```
 
+Precision of Fractional Numbers:
+
+```nginx
+location / {
+    sass_precision  5; # default
+    sass_precision  3;
+}
+```
+
 Output Style:
 
 ```nginx

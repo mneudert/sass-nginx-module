@@ -9,6 +9,7 @@ typedef struct {
     ngx_uint_t  error_log;
     ngx_str_t   include_paths;
     ngx_uint_t  output_style;
+    ngx_uint_t  precision;
     ngx_flag_t  source_comments;
 } ngx_http_sass_loc_conf_t;
 
@@ -47,6 +48,13 @@ static ngx_command_t  ngx_http_sass_commands[] = {
       ngx_conf_set_str_slot,
       NGX_HTTP_LOC_CONF_OFFSET,
       offsetof(ngx_http_sass_loc_conf_t, include_paths),
+      NULL },
+
+    { ngx_string("sass_precision"),
+      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_TAKE1,
+      ngx_conf_set_num_slot,
+      NGX_HTTP_LOC_CONF_OFFSET,
+      offsetof(ngx_http_sass_loc_conf_t, precision),
       NULL },
 
     { ngx_string("sass_output"),
@@ -144,6 +152,7 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     ngx_memzero(&file, sizeof(ngx_file_t));
 
     options.output_style    = clcf->output_style;
+    options.precision       = (int) clcf->precision;
     options.source_comments = clcf->source_comments;
     options.include_paths   = (char *) clcf->include_paths.data;
 
@@ -219,6 +228,7 @@ ngx_http_sass_create_loc_conf(ngx_conf_t *cf)
     conf->enable          = NGX_CONF_UNSET;
     conf->error_log       = NGX_LOG_ERR;
     conf->output_style    = SASS_STYLE_NESTED;
+    conf->precision       = NGX_CONF_UNSET_UINT;
     conf->source_comments = NGX_CONF_UNSET;
 
     return conf;
@@ -234,6 +244,7 @@ ngx_http_sass_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
     ngx_conf_merge_off_value(conf->enable, prev->enable, 0);
     ngx_conf_merge_str_value(conf->include_paths, prev->include_paths, "");
     ngx_conf_merge_uint_value(conf->output_style, prev->output_style, SASS_STYLE_NESTED);
+    ngx_conf_merge_uint_value(conf->precision, prev->precision, 5);
     ngx_conf_merge_off_value(conf->source_comments, prev->source_comments, 0);
 
     return NGX_CONF_OK;
