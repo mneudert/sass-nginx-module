@@ -1,7 +1,7 @@
 #include <ngx_config.h>
 #include <ngx_core.h>
 #include <ngx_http.h>
-#include <sass_interface.h>
+#include <sass_context.h>
 
 
 typedef struct {
@@ -127,8 +127,11 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     ngx_file_t                 file;
     ngx_str_t                  content, path;
     ngx_http_sass_loc_conf_t  *clcf;
-    struct sass_file_context  *ctx;
-    struct sass_options        options;
+
+    const char                *output;
+    struct Sass_Context       *ctx;
+    struct Sass_File_Context  *ctx_file;
+    struct Sass_Options       *options;
 
     if (!(r->method & (NGX_HTTP_GET|NGX_HTTP_HEAD))) {
         return NGX_DECLINED;
@@ -151,25 +154,31 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     ngx_log_debug(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass compile file: \"%V\"", &path);
     ngx_memzero(&file, sizeof(ngx_file_t));
 
-    options.output_style    = clcf->output_style;
-    options.precision       = (int) clcf->precision;
-    options.source_comments = clcf->source_comments;
-    options.include_paths   = (char *) clcf->include_paths.data;
+    ctx_file = sass_make_file_context((char *) path.data);
+    ctx      = sass_file_context_get_context(ctx_file);
+    options  = sass_file_context_get_options(ctx_file);
 
-    ctx             = sass_new_file_context();
-    ctx->options    = options;
-    ctx->input_path = (char *) path.data;
+    sass_option_set_include_path(options, (char *) clcf->include_paths.data);
+    sass_option_set_input_path(options, (char *) path.data);
+    sass_option_set_output_style(options, clcf->output_style);
+    sass_option_set_precision(options, (int) clcf->precision);
+    sass_option_set_source_comments(options, clcf->source_comments);
 
-    sass_compile_file(ctx);
+    sass_compile_file_context(ctx_file);
 
-    if (ctx->error_status && ctx->error_message) {
-        ngx_log_error(clcf->error_log, r->connection->log, 0, "sass compilation error: %s", ctx->error_message);
-        sass_free_file_context(ctx);
+    if (sass_context_get_error_status(ctx)
+        && sass_context_get_error_message(ctx)
+    ) {
+        ngx_log_error(clcf->error_log, r->connection->log, 0,
+                      "sass compilation error: %s",
+                      sass_context_get_error_message(ctx));
+        sass_delete_file_context(ctx_file);
 
         return NGX_HTTP_INTERNAL_SERVER_ERROR;
-    } else if (ctx->error_status) {
-        ngx_log_error(clcf->error_log, r->connection->log, 0, "sass compilation error");
-        sass_free_file_context(ctx);
+    } else if (sass_context_get_error_status(ctx)) {
+        ngx_log_error(clcf->error_log, r->connection->log, 0,
+                      "sass compilation error");
+        sass_delete_file_context(ctx_file);
 
         return NGX_HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -177,37 +186,42 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     b = ngx_pcalloc(r->pool, sizeof(ngx_buf_t));
 
     if (NULL == b) {
-        ngx_log_error(clcf->error_log, r->connection->log, 0, "sass compilation error: %s", ctx->error_message);
-        sass_free_file_context(ctx);
+        ngx_log_error(clcf->error_log, r->connection->log, 0,
+                      "sass compilation error: %s",
+                      sass_context_get_error_message(ctx));
+        sass_delete_file_context(ctx_file);
 
         return NGX_HTTP_INTERNAL_SERVER_ERROR;
     }
+
+    output = sass_context_get_output_string(ctx);
 
     out.buf  = b;
     out.next = NULL;
 
-    content.len  = sizeof(ctx->output_string) - 1;
-    content.data = ngx_pnalloc(r->pool, strlen(ctx->output_string));
+    content.len  = sizeof(output) - 1;
+    content.data = ngx_pnalloc(r->pool, strlen(output));
 
     if (NULL == content.data) {
-        ngx_log_error(clcf->error_log, r->connection->log, 0, "sass failed to allocate response buffer");
-        sass_free_file_context(ctx);
+        ngx_log_error(clcf->error_log, r->connection->log, 0,
+                      "sass failed to allocate response buffer");
+        sass_delete_file_context(ctx_file);
 
         return NGX_HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    ngx_cpystrn(content.data, (unsigned char *) ctx->output_string, strlen(ctx->output_string));
+    ngx_cpystrn(content.data, (unsigned char *) output, strlen(output));
 
     b->start    = b->pos = content.data;
-    b->last     = b->end = content.data + strlen(ctx->output_string);
+    b->last     = b->end = content.data + strlen(output);
     b->memory   = 1;
     b->last_buf = 1;
 
     r->headers_out.status           = NGX_HTTP_OK;
     r->headers_out.content_type     = ngx_http_sass_type;
-    r->headers_out.content_length_n = strlen(ctx->output_string);
+    r->headers_out.content_length_n = strlen(output);
 
-    sass_free_file_context(ctx);
+    sass_delete_file_context(ctx_file);
     ngx_http_send_header(r);
 
     return ngx_http_output_filter(r, &out);

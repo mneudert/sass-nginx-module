@@ -44,8 +44,8 @@ local libsass installation before proceeding.
 During compilation the following header files have to be available:
 
 - sass.h
+- sass_context.h
 - sass_functions.h
-- sass_interface.h
 - sass_values.h
 - sass_version.h
 
