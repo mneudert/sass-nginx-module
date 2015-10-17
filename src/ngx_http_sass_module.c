@@ -120,12 +120,12 @@ ngx_module_t  ngx_http_sass_module = {
 static ngx_int_t
 ngx_http_sass_handler(ngx_http_request_t *r)
 {
-    size_t                     root;
-    u_char                    *last;
-    ngx_buf_t*                 b;
-    ngx_chain_t                out;
-    ngx_file_t                 file;
-    ngx_str_t                  content, path;
+    size_t        root;
+    u_char       *last;
+    ngx_buf_t*    b;
+    ngx_chain_t   out;
+    ngx_str_t     content, path;
+
     ngx_http_sass_loc_conf_t  *clcf;
 
     const char                *output;
@@ -152,7 +152,6 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     path.len = last - path.data;
 
     ngx_log_debug(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass compile file: \"%V\"", &path);
-    ngx_memzero(&file, sizeof(ngx_file_t));
 
     ctx_file = sass_make_file_context((char *) path.data);
     ctx      = sass_file_context_get_context(ctx_file);
