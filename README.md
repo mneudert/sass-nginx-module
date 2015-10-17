@@ -109,15 +109,15 @@ location / {
 }
 ```
 
-Include Paths:
+Include Path:
 
 ```nginx
 location / {
     # windows (semicolon as path sep)
-    sass_include_paths  "/some/dir;/another/dir";
+    sass_include_path  "/some/dir;/another/dir";
 
     # everywhere else (colon as path sep)
-    sass_include_paths  "/some/dir:/another/dir";
+    sass_include_path  "/some/dir:/another/dir";
 }
 ```
 
@@ -134,10 +134,10 @@ Output Style:
 
 ```nginx
 location / {
-    sass_output  compact;
-    sass_output  compressed;
-    sass_output  expanded;
-    sass_output  nested;     # default
+    sass_output_style  compact;
+    sass_output_style  compressed;
+    sass_output_style  expanded;
+    sass_output_style  nested;     # default
 }
 ```
 
@@ -145,8 +145,8 @@ Source Comments:
 
 ```nginx
 location / {
-    sass_comments  off; # default
-    sass_comments  on;
+    sass_source_comments  off; # default
+    sass_source_comments  on;
 }
 ```
 

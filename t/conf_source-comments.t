@@ -42,8 +42,8 @@ body {
     location ~ ^.*\.css$ {
         root  $TEST_NGINX_FIXTURE_DIR;
 
-        sass_compile   on;
-        sass_comments  off;
+        sass_compile          on;
+        sass_source_comments  off;
 
         rewrite  ^(.*)\.css$  $1.scss  break;
 
@@ -64,8 +64,8 @@ body {
     location ~ ^.*\.css$ {
         root  $TEST_NGINX_FIXTURE_DIR;
 
-        sass_compile   on;
-        sass_comments  on;
+        sass_compile          on;
+        sass_source_comments  on;
 
         rewrite  ^(.*)\.css$  $1.scss  break;
     }
