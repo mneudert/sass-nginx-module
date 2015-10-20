@@ -8,6 +8,7 @@ typedef struct {
     ngx_flag_t  enable;
     ngx_uint_t  error_log;
     ngx_str_t   include_path;
+    ngx_str_t   indent;
     ngx_uint_t  output_style;
     ngx_uint_t  precision;
     ngx_flag_t  source_comments;
@@ -41,6 +42,13 @@ static ngx_command_t  ngx_http_sass_commands[] = {
       ngx_conf_set_str_slot,
       NGX_HTTP_LOC_CONF_OFFSET,
       offsetof(ngx_http_sass_loc_conf_t, include_path),
+      NULL },
+
+    { ngx_string("sass_indent"),
+      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_TAKE1,
+      ngx_conf_set_str_slot,
+      NGX_HTTP_LOC_CONF_OFFSET,
+      offsetof(ngx_http_sass_loc_conf_t, indent),
       NULL },
 
     { ngx_string("sass_precision"),
@@ -158,6 +166,7 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     options  = sass_file_context_get_options(ctx_file);
 
     sass_option_set_include_path(options, (char *) clcf->include_path.data);
+    sass_option_set_indent(options, (char *) clcf->indent.data);
     sass_option_set_input_path(options, (char *) path.data);
     sass_option_set_output_style(options, clcf->output_style);
     sass_option_set_precision(options, (int) clcf->precision);
@@ -256,6 +265,7 @@ ngx_http_sass_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
 
     ngx_conf_merge_off_value(conf->enable, prev->enable, 0);
     ngx_conf_merge_str_value(conf->include_path, prev->include_path, "");
+    ngx_conf_merge_str_value(conf->indent, prev->indent, "  ");
     ngx_conf_merge_uint_value(conf->output_style, prev->output_style, SASS_STYLE_NESTED);
     ngx_conf_merge_uint_value(conf->precision, prev->precision, 5);
     ngx_conf_merge_off_value(conf->source_comments, prev->source_comments, 0);

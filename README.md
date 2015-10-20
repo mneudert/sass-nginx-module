@@ -121,6 +121,15 @@ location / {
 }
 ```
 
+Indentation:
+
+```nginx
+location / {
+    sass_indent  "  ";   # default
+    sass_indent  "    ";
+}
+```
+
 Precision of Fractional Numbers:
 
 ```nginx
