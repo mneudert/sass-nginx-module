@@ -12,6 +12,7 @@ typedef struct {
     ngx_flag_t  source_comments;
     ngx_uint_t  precision;
     ngx_flag_t  source_map_embed;
+    ngx_flag_t  is_indented_syntax_src;
     ngx_flag_t  omit_source_map_url;
     ngx_flag_t  source_map_contents;
     ngx_str_t   source_map_root;
@@ -170,6 +171,7 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     options.include_paths   = (char *) clcf->include_paths.data;
 
     options.omit_source_map_url = clcf->omit_source_map_url;
+    options.is_indented_syntax_src = clcf->is_indented_syntax_src;
     options.source_map_embed = clcf->source_map_embed;
     options.source_map_contents = clcf->source_map_contents;
 
@@ -259,6 +261,7 @@ ngx_http_sass_create_loc_conf(ngx_conf_t *cf)
     conf->precision       = NGX_CONF_UNSET;
     conf->source_comments = NGX_CONF_UNSET;
     conf->omit_source_map_url = NGX_CONF_UNSET;
+    conf->is_indented_syntax_src = NGX_CONF_UNSET;
     conf->source_map_embed    = NGX_CONF_UNSET;
     conf->source_map_contents = NGX_CONF_UNSET;
 
@@ -278,6 +281,7 @@ ngx_http_sass_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
     ngx_conf_merge_uint_value(conf->precision, prev->precision, 5);
     ngx_conf_merge_off_value(conf->source_comments, prev->source_comments, 0);
     ngx_conf_merge_off_value(conf->omit_source_map_url, prev->omit_source_map_url, 0);
+    ngx_conf_merge_off_value(conf->is_indented_syntax_src, prev->is_indented_syntax_src, 0);  
     ngx_conf_merge_off_value(conf->source_map_embed, prev->source_map_embed, 0);
     ngx_conf_merge_off_value(conf->source_map_contents, prev->source_map_contents, 0);
     ngx_conf_merge_str_value(conf->source_map_root, prev->source_map_root, "");
