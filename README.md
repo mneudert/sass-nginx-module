@@ -115,6 +115,15 @@ location / {
 }
 ```
 
+Detect SASS files (not SCSS):
+
+```nginx
+location / {
+    sass_indent  off;    # default
+    sass_indent  on;
+}
+```
+
 Precision:
 
 ```nginx

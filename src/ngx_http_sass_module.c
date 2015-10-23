@@ -64,11 +64,26 @@ static ngx_command_t  ngx_http_sass_commands[] = {
       offsetof(ngx_http_sass_loc_conf_t, precision),
       NULL },
 
+    { ngx_string("sass_indent"),
+      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_FLAG,
+      ngx_conf_set_flag_slot,
+      NGX_HTTP_LOC_CONF_OFFSET,
+      offsetof(ngx_http_sass_loc_conf_t, is_indented_syntax_src),
+      NULL },
+
+
     { ngx_string("sass_map_file"),
       NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_TAKE1,
       ngx_conf_set_str_slot,
       NGX_HTTP_LOC_CONF_OFFSET,
       offsetof(ngx_http_sass_loc_conf_t, source_map_file),
+      NULL },
+
+    { ngx_string("sass_map_root"),
+      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_TAKE1,
+      ngx_conf_set_str_slot,
+      NGX_HTTP_LOC_CONF_OFFSET,
+      offsetof(ngx_http_sass_loc_conf_t, source_map_root),
       NULL },
 
     { ngx_string("sass_output"),
