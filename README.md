@@ -1,7 +1,7 @@
-# Syntactically Awesome Nginx Module
+# Syntactically Awesome NGINX Module
 
 Providing on-the-fly compiling of [Sass](http://sass-lang.com/) files as an
-nginx module.
+NGINX module.
 
 Stop thinking about "sass watch" shell processes or the integration features of
 your IDE while still using the power of Sass while developing your websites.
@@ -22,7 +22,7 @@ Use with caution!
 
 To be able to compile this module you need
 [libsass](https://github.com/sass/libsass) available. For a list of tested, and
-therefore more or less supported, combinations of libsass and nginx versions
+therefore more or less supported, combinations of libsass and NGINX versions
 please refer to the travis environment in `.travis.yml`. Using different
 versions can result in unexpected behaviour or won't work at all.
 
@@ -49,9 +49,9 @@ During compilation the following header files have to be available:
 - sass_values.h
 - sass_version.h
 
-### Nginx
+### NGINX
 
-Using this module is as easy as recompiling nginx from source:
+Using this module is as easy as recompiling NGINX from source:
 
 ```shell
 cd /path/to/nginx/src
@@ -104,7 +104,7 @@ Error Log Level:
 
 ```nginx
 location / {
-    # same as regular nginx error log
+    # same as regular NGINX error log
     sass_error_log  error;  #default
 }
 ```
