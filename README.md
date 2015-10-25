@@ -130,6 +130,15 @@ location / {
 }
 ```
 
+Linefeed:
+
+```nginx
+location / {
+    sass_linefeed  "\n";                 # default
+    sass_linefeed  "\n/* linefeed */\n";
+}
+```
+
 Precision of Fractional Numbers:
 
 ```nginx
