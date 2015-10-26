@@ -56,11 +56,19 @@ if [ "${1}" != "--nocompile" ]; then
 
   cd "../nginx-${VER_NGINX}"
 
+  echo "${moduledir}/vendor/libsass-${VER_LIBSASS}/include"
+  if [ -d "${moduledir}/vendor/libsass-${VER_LIBSASS}/include" ]; then
+    sass_include="${moduledir}/vendor/libsass-${VER_LIBSASS}/include"
+  else
+    # required for libsass < 3.3.0
+    sass_include="${moduledir}/vendor/libsass-${VER_LIBSASS}"
+  fi
+
   ./configure \
       --add-module="${moduledir}/vendor/ngx_devel_kit-${VER_NGX_DEVEL}" \
       --add-module="${moduledir}/vendor/lua-nginx-module-${VER_LUA_NGINX}" \
       --add-module="${moduledir}" \
-      --with-cc-opt="-I ${moduledir}/vendor/libsass-${VER_LIBSASS}" \
+      --with-cc-opt="-I ${sass_include}" \
       --with-ld-opt="-L ${moduledir}/vendor/libsass-${VER_LIBSASS}/lib"
   make || exit $?
 fi

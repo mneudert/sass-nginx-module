@@ -6,6 +6,11 @@ NGINX module.
 Stop thinking about "sass watch" shell processes or the integration features of
 your IDE while still using the power of Sass while developing your websites.
 
+Supported versions of libsass:
+
+- `3.2.5`
+- `3.3.0`
+
 ### Note
 
 This module is experimental and only been used in development environments.
@@ -41,13 +46,12 @@ This can be done by adding the path to the *$LD\_LIBRARY\_PATH* variable or the
 file */etc/ld.so.conf*. Either way, please ensure the command above finds your
 local libsass installation before proceeding.
 
-During compilation the following header files have to be available:
+During compilation the header file `sass.h` has to be available. The files
+included inside this file are also required. The exact list depends on your
+libsass version.
 
-- sass.h
-- sass_context.h
-- sass_functions.h
-- sass_values.h
-- sass_version.h
+If you are using a _libsass version prior to 3.3.0_ you also need the file
+`sass_context.h`.
 
 ### NGINX
 
