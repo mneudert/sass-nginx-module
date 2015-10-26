@@ -1,7 +1,7 @@
 #include <ngx_config.h>
 #include <ngx_core.h>
 #include <ngx_http.h>
-#include <lib/libsass/include/sass.h> 
+#include <sass/context.h> 
 
 
 typedef struct {
