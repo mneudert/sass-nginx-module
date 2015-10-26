@@ -1,0 +1,20 @@
+@mixin texto($font, $size, $color)
+	font-family: $font
+	font-size: $size
+	color: $color
+	margin: 0
+
+@mixin shadow($x, $y, $blur, $color)
+	text-shadow: $x $y $blur $color
+	filter: Shadow(Color=$color, Direction=130, Strength=1)
+
+@mixin filterS($x, $y, $blur, $color)
+	-moz-box-shadow: $x $y $blur $color
+	-webkit-box-shadow: $x $y $blur $color
+	box-shadow: $x $y $blur $color
+
+@mixin img($url, $w, $h)
+	background:  url($url) 0 0 no-repeat
+	width: $w
+	height: $h
+
