@@ -119,8 +119,8 @@ Detect SASS files (not SCSS):
 
 ```nginx
 location / {
-    sass_indent  off;    # default
-    sass_indent  on;
+    sass_style  off;    # default
+    sass_style  on;
 }
 ```
 
