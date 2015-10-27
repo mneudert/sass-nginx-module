@@ -87,11 +87,7 @@ Include Paths:
 
 ```nginx
 location / {
-    # windows (semicolon as path sep)
-    sass_include_paths  "/some/dir;/another/dir";
-
-    # everywhere else (colon as path sep)
-    sass_include_paths  "/some/dir:/another/dir";
+    sass_include_path  "/some/dir';
 }
 ```
 

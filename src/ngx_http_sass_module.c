@@ -253,6 +253,10 @@ ngx_http_sass_handler(ngx_http_request_t *r)
         return NGX_HTTP_INTERNAL_SERVER_ERROR;
     }
 
+    if (clcf->source_map_file.len > 0) {
+
+    } else {
+
     output = sass_context_get_output_string(ctx);
 
     out.buf  = b;
@@ -279,6 +283,8 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     r->headers_out.status           = NGX_HTTP_OK;
     r->headers_out.content_type     = ngx_http_sass_type;
     r->headers_out.content_length_n = strlen(output);
+
+    }
 
     sass_delete_file_context(ctx_file);
     ngx_http_send_header(r);
