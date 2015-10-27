@@ -11,7 +11,7 @@
 typedef struct {
     ngx_flag_t  enable;
     ngx_uint_t  error_log;
-    ngx_str_t   include_paths;
+    ngx_str_t   include_path;
     ngx_uint_t  output_style;
     ngx_flag_t  source_comments;
     ngx_uint_t  precision;
@@ -54,11 +54,11 @@ static ngx_command_t  ngx_http_sass_commands[] = {
       offsetof(ngx_http_sass_loc_conf_t, error_log),
       NULL },
 
-    { ngx_string("sass_include_paths"),
+    { ngx_string("sass_include_path"),
       NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_TAKE1,
       ngx_conf_set_str_slot,
       NGX_HTTP_LOC_CONF_OFFSET,
-      offsetof(ngx_http_sass_loc_conf_t, include_paths),
+      offsetof(ngx_http_sass_loc_conf_t, include_path),
       NULL },
 
      { ngx_string("sass_precision"),
@@ -216,13 +216,13 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     sass_option_set_output_style(options, clcf->output_style);
 
     if (clcf->source_map_file.len > 0) {
-    sass_option_set_source_map_file(options, clcf->source_map_file.data);
+    sass_option_set_source_map_file(options,(char *) clcf->source_map_file.data);
     sass_option_set_omit_source_map_url(options, false);
     sass_option_set_source_map_contents(options, true);
     }
 
     if (clcf->source_map_root.len > 0) {
-    sass_option_set_source_map_root(options,clcf->source_map_root.data);
+    sass_option_set_source_map_root(options, (char *) clcf->source_map_root.data);
     }
 
       if (sass_context_get_error_status(ctx)
@@ -318,11 +318,11 @@ ngx_http_sass_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
     ngx_http_sass_loc_conf_t *conf = child;
 
     ngx_conf_merge_off_value(conf->enable, prev->enable, 0);
-    ngx_conf_merge_str_value(conf->include_paths, prev->include_paths, "");
+    ngx_conf_merge_str_value(conf->include_path, prev->include_path, "");
     ngx_conf_merge_uint_value(conf->output_style, prev->output_style, SASS_STYLE_NESTED);
     ngx_conf_merge_uint_value(conf->precision, prev->precision, 5);
     ngx_conf_merge_off_value(conf->source_comments, prev->source_comments, 0);
-    ngx_conf_merge_off_value(conf->omit_url, prev->omit_rul, 0);
+    ngx_conf_merge_off_value(conf->omit_url, prev->omit_url, 0);
     ngx_conf_merge_off_value(conf->source_type, prev->source_type, 0);  
     ngx_conf_merge_off_value(conf->map_embed, prev->map_embed, 0);
     ngx_conf_merge_off_value(conf->source_map_contents, prev->source_map_contents, 0);
