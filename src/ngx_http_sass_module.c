@@ -3,6 +3,10 @@
 #include <ngx_http.h>
 #include <sass.h> 
 
+// required for libsass < 3.3.0
+#ifndef SASS_C_CONTEXT_H
+#include <sass_context.h>
+#endif
 
 typedef struct {
     ngx_flag_t  enable;
@@ -11,9 +15,9 @@ typedef struct {
     ngx_uint_t  output_style;
     ngx_flag_t  source_comments;
     ngx_uint_t  precision;
-    ngx_flag_t  source_map_embed;
-    ngx_flag_t  is_indented_syntax_src;
-    ngx_flag_t  omit_source_map_url;
+    ngx_flag_t  map_embed;
+    ngx_flag_t  source_type;
+    ngx_flag_t  omit_url;
     ngx_flag_t  source_map_contents;
     ngx_str_t   source_map_root;
     ngx_str_t   source_map_file;
@@ -64,13 +68,12 @@ static ngx_command_t  ngx_http_sass_commands[] = {
       offsetof(ngx_http_sass_loc_conf_t, precision),
       NULL },
 
-    { ngx_string("sass_indent"),
+    { ngx_string("sass_source_type"),
       NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_FLAG,
       ngx_conf_set_flag_slot,
       NGX_HTTP_LOC_CONF_OFFSET,
-      offsetof(ngx_http_sass_loc_conf_t, is_indented_syntax_src),
+      offsetof(ngx_http_sass_loc_conf_t, source_type),
       NULL },
-
 
     { ngx_string("sass_map_file"),
       NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_TAKE1,
@@ -84,6 +87,20 @@ static ngx_command_t  ngx_http_sass_commands[] = {
       ngx_conf_set_str_slot,
       NGX_HTTP_LOC_CONF_OFFSET,
       offsetof(ngx_http_sass_loc_conf_t, source_map_root),
+      NULL },
+
+    { ngx_string("sass_map_embed"),
+      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_TAKE1,
+      ngx_conf_set_str_slot,
+      NGX_HTTP_LOC_CONF_OFFSET,
+      offsetof(ngx_http_sass_loc_conf_t, map_embed),
+      NULL },
+
+     { ngx_string("sass_map_url"),
+      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_TAKE1,
+      ngx_conf_set_str_slot,
+      NGX_HTTP_LOC_CONF_OFFSET,
+      offsetof(ngx_http_sass_loc_conf_t, omit_url),
       NULL },
 
     { ngx_string("sass_output"),
@@ -149,15 +166,18 @@ ngx_module_t  ngx_http_sass_module = {
 static ngx_int_t
 ngx_http_sass_handler(ngx_http_request_t *r)
 {
-    size_t                     root;
-    u_char                    *last;
-    ngx_buf_t*                 b;
-    ngx_chain_t                out;
-    ngx_file_t                 file;
-    ngx_str_t                  content, path;
+    size_t        root;
+    u_char       *last;
+    ngx_buf_t*    b;
+    ngx_chain_t   out;
+    ngx_str_t     content, path;
+
     ngx_http_sass_loc_conf_t  *clcf;
-    struct sass_file_context  *ctx;
-    struct sass_options        options;
+
+    const char                *output;
+    struct Sass_Context       *ctx;
+    struct Sass_File_Context  *ctx_file;
+    struct Sass_Options       *options;
 
     if (!(r->method & (NGX_HTTP_GET|NGX_HTTP_HEAD))) {
         return NGX_DECLINED;
@@ -178,43 +198,46 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     path.len = last - path.data;
 
     ngx_log_debug(NGX_LOG_DEBUG_HTTP, r->connection->log, 0, "sass compile file: \"%V\"", &path);
-    ngx_memzero(&file, sizeof(ngx_file_t));
 
-    options.output_style    = clcf->output_style;
-    options.source_comments = clcf->source_comments;
-    options.precision = (int) clcf->precision;
-    options.include_paths   = (char *) clcf->include_paths.data;
+    ctx_file = sass_make_file_context((char *) path.data);
+    ctx      = sass_file_context_get_context(ctx_file);
+    options  = sass_file_context_get_options(ctx_file);
 
-    options.omit_source_map_url = clcf->omit_source_map_url;
-    options.is_indented_syntax_src = clcf->is_indented_syntax_src;
-    options.source_map_embed = clcf->source_map_embed;
-    options.source_map_contents = clcf->source_map_contents;
+    sass_option_set_precision(options, (int) clcf->precision);
+    sass_option_set_source_comments(options, clcf->source_comments);
+    sass_option_set_include_path(options, (char *) clcf->include_path.data);
+
+    sass_option_set_is_indented_syntax_src(options, clcf->source_type);
+    sass_option_set_omit_source_map_url(options, clcf->omit_url);
+    sass_option_set_source_map_embed(options, clcf->map_embed);
+    sass_option_set_source_map_contents(options, clcf->source_map_contents);
+
+    sass_option_set_input_path(options, (char *) path.data);
+    sass_option_set_output_style(options, clcf->output_style);
 
     if (clcf->source_map_file.len > 0) {
-    options.source_map_file = (char *) clcf->source_map_file.data;
-    options.omit_source_map_url = false;
-    options.source_map_contents = true;
+    sass_option_set_source_map_file(options, clcf->source_map_file.data);
+    sass_option_set_omit_source_map_url(options, false);
+    sass_option_set_source_map_contents(options, true);
     }
 
     if (clcf->source_map_root.len > 0) {
-    options.source_map_root = (char *) clcf->source_map_root.data;
+    sass_option_set_source_map_root(options,clcf->source_map_root.data);
     }
 
-
-    ctx             = sass_new_file_context();
-    ctx->options    = options;
-    ctx->input_path = (char *) path.data;
-
-    sass_compile_file(ctx);
-
-    if (ctx->error_status && ctx->error_message) {
-        ngx_log_error(clcf->error_log, r->connection->log, 0, "sass compilation error: %s", ctx->error_message);
-        sass_free_file_context(ctx);
+      if (sass_context_get_error_status(ctx)
+        && sass_context_get_error_message(ctx)
+    ) {
+        ngx_log_error(clcf->error_log, r->connection->log, 0,
+                      "sass compilation error: %s",
+                      sass_context_get_error_message(ctx));
+        sass_delete_file_context(ctx_file);
 
         return NGX_HTTP_INTERNAL_SERVER_ERROR;
-    } else if (ctx->error_status) {
-        ngx_log_error(clcf->error_log, r->connection->log, 0, "sass compilation error");
-        sass_free_file_context(ctx);
+    } else if (sass_context_get_error_status(ctx)) {
+        ngx_log_error(clcf->error_log, r->connection->log, 0,
+                      "sass compilation error");
+        sass_delete_file_context(ctx_file);
 
         return NGX_HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -222,42 +245,46 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     b = ngx_pcalloc(r->pool, sizeof(ngx_buf_t));
 
     if (NULL == b) {
-        ngx_log_error(clcf->error_log, r->connection->log, 0, "sass compilation error: %s", ctx->error_message);
-        sass_free_file_context(ctx);
+        ngx_log_error(clcf->error_log, r->connection->log, 0,
+                      "sass compilation error: %s",
+                      sass_context_get_error_message(ctx));
+        sass_delete_file_context(ctx_file);
 
         return NGX_HTTP_INTERNAL_SERVER_ERROR;
     }
+
+    output = sass_context_get_output_string(ctx);
 
     out.buf  = b;
     out.next = NULL;
 
-    content.len  = sizeof(ctx->output_string) - 1;
-    content.data = ngx_pnalloc(r->pool, strlen(ctx->output_string));
+    content.len  = sizeof(output) - 1;
+    content.data = ngx_pnalloc(r->pool, strlen(output));
 
     if (NULL == content.data) {
-        ngx_log_error(clcf->error_log, r->connection->log, 0, "sass failed to allocate response buffer");
-        sass_free_file_context(ctx);
+        ngx_log_error(clcf->error_log, r->connection->log, 0,
+                      "sass failed to allocate response buffer");
+        sass_delete_file_context(ctx_file);
 
         return NGX_HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    ngx_cpystrn(content.data, (unsigned char *) ctx->output_string, strlen(ctx->output_string));
+    ngx_cpystrn(content.data, (unsigned char *) output, strlen(output));
 
     b->start    = b->pos = content.data;
-    b->last     = b->end = content.data + strlen(ctx->output_string);
+    b->last     = b->end = content.data + strlen(output);
     b->memory   = 1;
     b->last_buf = 1;
 
     r->headers_out.status           = NGX_HTTP_OK;
     r->headers_out.content_type     = ngx_http_sass_type;
-    r->headers_out.content_length_n = strlen(ctx->output_string);
+    r->headers_out.content_length_n = strlen(output);
 
-    sass_free_file_context(ctx);
+    sass_delete_file_context(ctx_file);
     ngx_http_send_header(r);
 
     return ngx_http_output_filter(r, &out);
 }
-
 
 static void *
 ngx_http_sass_create_loc_conf(ngx_conf_t *cf)
@@ -275,9 +302,9 @@ ngx_http_sass_create_loc_conf(ngx_conf_t *cf)
     conf->output_style    = SASS_STYLE_NESTED;
     conf->precision       = NGX_CONF_UNSET;
     conf->source_comments = NGX_CONF_UNSET;
-    conf->omit_source_map_url = NGX_CONF_UNSET;
-    conf->is_indented_syntax_src = NGX_CONF_UNSET;
-    conf->source_map_embed    = NGX_CONF_UNSET;
+    conf->omit_url          = NGX_CONF_UNSET;
+    conf->source_type       = NGX_CONF_UNSET;
+    conf->map_embed          = NGX_CONF_UNSET;
     conf->source_map_contents = NGX_CONF_UNSET;
 
     return conf;
@@ -295,9 +322,9 @@ ngx_http_sass_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
     ngx_conf_merge_uint_value(conf->output_style, prev->output_style, SASS_STYLE_NESTED);
     ngx_conf_merge_uint_value(conf->precision, prev->precision, 5);
     ngx_conf_merge_off_value(conf->source_comments, prev->source_comments, 0);
-    ngx_conf_merge_off_value(conf->omit_source_map_url, prev->omit_source_map_url, 0);
-    ngx_conf_merge_off_value(conf->is_indented_syntax_src, prev->is_indented_syntax_src, 0);  
-    ngx_conf_merge_off_value(conf->source_map_embed, prev->source_map_embed, 0);
+    ngx_conf_merge_off_value(conf->omit_url, prev->omit_rul, 0);
+    ngx_conf_merge_off_value(conf->source_type, prev->source_type, 0);  
+    ngx_conf_merge_off_value(conf->map_embed, prev->map_embed, 0);
     ngx_conf_merge_off_value(conf->source_map_contents, prev->source_map_contents, 0);
     ngx_conf_merge_str_value(conf->source_map_root, prev->source_map_root, "");
     ngx_conf_merge_str_value(conf->source_map_file, prev->source_map_file, "");
