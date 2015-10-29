@@ -192,7 +192,7 @@ If you fulfill the prerequisites you can use the script `./compile_and_test.sh`
 to download, compile and test in on go:
 
 ```shell
-VER_LIBSASS=3.2.5 \
+VER_LIBSASS=3.3.0 \
     VER_LUA_NGINX=0.9.16 \
     VER_NGX_DEVEL=0.2.19 \
     VER_NGINX=1.9.5 \
@@ -211,7 +211,7 @@ All dependencies will automatically be downloaded to the `./vendor` subfolder.
 To skip the compilation (and download) step you can pass the `--nocompile` flag:
 
 ```shell
-VER_LIBSASS=3.2.5 \
+VER_LIBSASS=3.3.0 \
     VER_LUA_NGINX=0.9.16 \
     VER_NGX_DEVEL=0.2.19 \
     VER_NGINX=1.9.5 \
