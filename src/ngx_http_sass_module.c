@@ -18,6 +18,7 @@ typedef struct {
     ngx_uint_t  output_style;
     ngx_uint_t  precision;
     ngx_flag_t  source_comments;
+    ngx_flag_t  source_map_embed;
 } ngx_http_sass_loc_conf_t;
 
 
@@ -83,6 +84,13 @@ static ngx_command_t  ngx_http_sass_commands[] = {
       ngx_conf_set_flag_slot,
       NGX_HTTP_LOC_CONF_OFFSET,
       offsetof(ngx_http_sass_loc_conf_t, source_comments),
+      NULL },
+
+    { ngx_string("sass_source_map_embed"),
+      NGX_HTTP_MAIN_CONF|NGX_HTTP_SRV_CONF|NGX_HTTP_LOC_CONF|NGX_CONF_FLAG,
+      ngx_conf_set_flag_slot,
+      NGX_HTTP_LOC_CONF_OFFSET,
+      offsetof(ngx_http_sass_loc_conf_t, source_map_embed),
       NULL },
 
     ngx_null_command
@@ -186,6 +194,11 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     sass_option_set_precision(options, (int) clcf->precision);
     sass_option_set_source_comments(options, clcf->source_comments);
 
+    if (clcf->source_map_embed) {
+        sass_option_set_source_map_embed(options, true);
+        sass_option_set_source_map_file(options, "needed-for-feature-activation");
+    }
+
     sass_compile_file_context(ctx_file);
 
     if (sass_context_get_error_status(ctx)
@@ -261,11 +274,12 @@ ngx_http_sass_create_loc_conf(ngx_conf_t *cf)
         return NULL;
     }
 
-    conf->enable          = NGX_CONF_UNSET;
-    conf->error_log       = NGX_LOG_ERR;
-    conf->output_style    = SASS_STYLE_NESTED;
-    conf->precision       = NGX_CONF_UNSET_UINT;
-    conf->source_comments = NGX_CONF_UNSET;
+    conf->enable           = NGX_CONF_UNSET;
+    conf->error_log        = NGX_LOG_ERR;
+    conf->output_style     = SASS_STYLE_NESTED;
+    conf->precision        = NGX_CONF_UNSET_UINT;
+    conf->source_comments  = NGX_CONF_UNSET;
+    conf->source_map_embed = NGX_CONF_UNSET;
 
     return conf;
 }
@@ -284,6 +298,7 @@ ngx_http_sass_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
     ngx_conf_merge_uint_value(conf->output_style, prev->output_style, SASS_STYLE_NESTED);
     ngx_conf_merge_uint_value(conf->precision, prev->precision, 5);
     ngx_conf_merge_off_value(conf->source_comments, prev->source_comments, 0);
+    ngx_conf_merge_off_value(conf->source_map_embed, prev->source_map_embed, 0);
 
     return NGX_CONF_OK;
 }

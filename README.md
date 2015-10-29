@@ -172,6 +172,15 @@ location / {
 }
 ```
 
+Source Map (embedded):
+
+```nginx
+location / {
+    sass_source_map_embed  off; # default
+    sass_source_map_embed  on;
+}
+```
+
 
 ## Testing
 
