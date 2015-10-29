@@ -18,17 +18,15 @@ __DATA__
 
 === TEST 1: default output style
 --- config
-    location ~ ^.*\.css$ {
+    location ~ ^.*\.scss$ {
         root  $TEST_NGINX_FIXTURE_DIR;
 
         sass_compile  on;
 
-        rewrite  ^(.*)\.css$  $1.scss  break;
-
         body_filter_by_lua 'ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\\n"';
     }
 --- request
-    GET /conf_output-style.css
+    GET /conf_output-style.scss
 --- response_body
 .output {
   background-color: white; }
@@ -38,18 +36,16 @@ __DATA__
 
 === TEST 1: output style "compact"
 --- config
-    location ~ ^.*\.css$ {
+    location ~ ^.*\.scss$ {
         root  $TEST_NGINX_FIXTURE_DIR;
 
         sass_compile       on;
         sass_output_style  compact;
 
-        rewrite  ^(.*)\.css$  $1.scss  break;
-
         body_filter_by_lua 'ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\\n"';
     }
 --- request
-    GET /conf_output-style.css
+    GET /conf_output-style.scss
 --- response_body
 .output { background-color: white; }
 
@@ -58,36 +54,32 @@ __DATA__
 
 === TEST 1: output style "compressed"
 --- config
-    location ~ ^.*\.css$ {
+    location ~ ^.*\.scss$ {
         root  $TEST_NGINX_FIXTURE_DIR;
 
         sass_compile       on;
         sass_output_style  compressed;
 
-        rewrite  ^(.*)\.css$  $1.scss  break;
-
         body_filter_by_lua 'ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\\n"';
     }
 --- request
-    GET /conf_output-style.css
+    GET /conf_output-style.scss
 --- response_body
 .output{background-color:#fff}.output .with-style{color:#000}
 
 
 === TEST 1: output style "expanded"
 --- config
-    location ~ ^.*\.css$ {
+    location ~ ^.*\.scss$ {
         root  $TEST_NGINX_FIXTURE_DIR;
 
         sass_compile       on;
         sass_output_style  expanded;
 
-        rewrite  ^(.*)\.css$  $1.scss  break;
-
         body_filter_by_lua 'ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\\n"';
     }
 --- request
-    GET /conf_output-style.css
+    GET /conf_output-style.scss
 --- response_body
 .output {
   background-color: white;
@@ -100,18 +92,16 @@ __DATA__
 
 === TEST 1: output style "nested"
 --- config
-    location ~ ^.*\.css$ {
+    location ~ ^.*\.scss$ {
         root  $TEST_NGINX_FIXTURE_DIR;
 
         sass_compile       on;
         sass_output_style  nested;
 
-        rewrite  ^(.*)\.css$  $1.scss  break;
-
         body_filter_by_lua 'ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\\n"';
     }
 --- request
-    GET /conf_output-style.css
+    GET /conf_output-style.scss
 --- response_body
 .output {
   background-color: white; }

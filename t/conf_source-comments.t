@@ -18,17 +18,15 @@ __DATA__
 
 === TEST 1: default comments
 --- config
-    location ~ ^.*\.css$ {
+    location ~ ^.*\.scss$ {
         root  $TEST_NGINX_FIXTURE_DIR;
 
         sass_compile  on;
 
-        rewrite  ^(.*)\.css$  $1.scss  break;
-
         body_filter_by_lua 'ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\\n"';
     }
 --- request
-    GET /conf_source-comments.css
+    GET /conf_source-comments.scss
 --- response_body
 html {
   background-color: black; }
@@ -39,18 +37,16 @@ body {
 
 === TEST 2: comments "off"
 --- config
-    location ~ ^.*\.css$ {
+    location ~ ^.*\.scss$ {
         root  $TEST_NGINX_FIXTURE_DIR;
 
         sass_compile          on;
         sass_source_comments  off;
 
-        rewrite  ^(.*)\.css$  $1.scss  break;
-
         body_filter_by_lua 'ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\\n"';
     }
 --- request
-    GET /conf_source-comments.css
+    GET /conf_source-comments.scss
 --- response_body
 html {
   background-color: black; }
@@ -61,14 +57,12 @@ body {
 
 === TEST 3: comments "on"
 --- config
-    location ~ ^.*\.css$ {
+    location ~ ^.*\.scss$ {
         root  $TEST_NGINX_FIXTURE_DIR;
 
         sass_compile          on;
         sass_source_comments  on;
-
-        rewrite  ^(.*)\.css$  $1.scss  break;
     }
 --- request
-    GET /conf_source-comments.css
+    GET /conf_source-comments.scss
 --- response_body_like: /* line 1,

@@ -18,17 +18,15 @@ __DATA__
 
 === TEST 1: default indent
 --- config
-    location /default.css {
+    location /default.scss {
         root  $TEST_NGINX_FIXTURE_DIR;
 
         sass_compile  on;
 
-        rewrite  ^(.*)\.css$  $1.scss  break;
-
         body_filter_by_lua 'ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\\n"';
     }
 --- request
-    GET /default.css
+    GET /default.scss
 --- response_body
 body {
   background-color: white;
@@ -37,18 +35,16 @@ body {
 
 === TEST 2: custom indent
 --- config
-    location /default.css {
+    location /default.scss {
         root  $TEST_NGINX_FIXTURE_DIR;
 
         sass_compile  on;
         sass_indent   "    ";
 
-        rewrite  ^(.*)\.css$  $1.scss  break;
-
         body_filter_by_lua 'ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\\n"';
     }
 --- request
-    GET /default.css
+    GET /default.scss
 --- response_body
 body {
     background-color: white;

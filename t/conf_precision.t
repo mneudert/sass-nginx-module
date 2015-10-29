@@ -18,17 +18,15 @@ __DATA__
 
 === TEST 1: default precision
 --- config
-    location ~ ^.*\.css$ {
+    location ~ ^.*\.scss$ {
         root  $TEST_NGINX_FIXTURE_DIR;
 
         sass_compile  on;
 
-        rewrite  ^(.*)\.css$  $1.scss  break;
-
         body_filter_by_lua 'ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\\n"';
     }
 --- request
-    GET /conf_precision.css
+    GET /conf_precision.scss
 --- response_body
 .precision-element {
   width: 1.95312px; }
@@ -36,18 +34,16 @@ __DATA__
 
 === TEST 2: custom precision
 --- config
-    location ~ ^.*\.css$ {
+    location ~ ^.*\.scss$ {
         root  $TEST_NGINX_FIXTURE_DIR;
 
         sass_compile    on;
         sass_precision  3;
 
-        rewrite  ^(.*)\.css$  $1.scss  break;
-
         body_filter_by_lua 'ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\\n"';
     }
 --- request
-    GET /conf_precision.css
+    GET /conf_precision.scss
 --- response_body_like
 .precision-element {
   width: 1.953px; }
