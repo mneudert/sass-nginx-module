@@ -298,14 +298,12 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     ngx_http_send_header(r);
 
     // End sequence if no map file
-    if (clcf->source_map_file.len > 0) {
+    if ((clcf->source_map_file.len > 0)) {
     ngx_http_output_filter(r, &out);
     } else {
     return ngx_http_output_filter(r, &out); 
     }
-
-    if (clcf->source_map_file.len > 0) {
-      
+    
     mapfile = sass_context_get_source_map_string(ctx);
 
     out.buf  = b;
@@ -333,11 +331,9 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     r->headers_out.content_type     = ngx_http_map_type;
     r->headers_out.content_length_n = strlen(mapfile);
 
+    sass_delete_file_context(ctx_file);
     ngx_http_send_header(r);
     return ngx_http_output_filter(r, &out);
-
-    }
-
   
 }
 
