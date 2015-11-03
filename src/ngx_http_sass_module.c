@@ -320,7 +320,7 @@ ngx_http_sass_handler(ngx_http_request_t *r)
         return NGX_HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    ngx_cpystrn(content.data, (unsigned char *) output, strlen(mapfile));
+    ngx_cpystrn(content.data, (unsigned char *) mapfile, strlen(mapfile));
 
     b->start    = b->pos = content.data;
     b->last     = b->end = content.data + strlen(mapfile);
