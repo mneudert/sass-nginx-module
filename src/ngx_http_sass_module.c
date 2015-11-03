@@ -1,7 +1,7 @@
 #include <ngx_config.h>
 #include <ngx_core.h>
 #include <ngx_http.h>
-#include <sass.h> 
+#include <sass.h>
 
 // required for libsass < 3.3.0
 #ifndef SASS_C_CONTEXT_H
@@ -171,7 +171,7 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     u_char       *last;
     ngx_buf_t*    b;
     ngx_chain_t   out;
-    ngx_str_t     content, path;
+    ngx_str_t     content, path, map;
 
     ngx_http_sass_loc_conf_t  *clcf;
 
@@ -255,9 +255,6 @@ ngx_http_sass_handler(ngx_http_request_t *r)
         return NGX_HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    if (clcf->source_map_file.len > 0) {
-
-    } else {
 
     output = sass_context_get_output_string(ctx);
 
@@ -289,7 +286,6 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     r->headers_out.status           = NGX_HTTP_OK;
     r->headers_out.content_type     = ngx_http_sass_type;
     r->headers_out.content_length_n = strlen(output);
-    }
 
     // Flush context if no map file
     if ((clcf->source_map_file.len = 0)) {
@@ -301,18 +297,18 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     if (clcf->source_map_file.len > 0) {
     ngx_http_output_filter(r, &out);
     } else {
-    return ngx_http_output_filter(r, &out); 
+    return ngx_http_output_filter(r, &out);
     }
-    
+
     mapfile = sass_context_get_source_map_string(ctx);
 
     out.buf  = b;
     out.next = NULL;
 
-    content.len  = sizeof(mapfile) - 1;
-    content.data = ngx_pnalloc(r->pool, strlen(mapfile));
+    map.len  = sizeof(mapfile) - 1;
+    map.data = ngx_pnalloc(r->pool, strlen(mapfile));
 
-    if (NULL == content.data) {
+    if (NULL == map.data) {
         ngx_log_error(clcf->error_log, r->connection->log, 0,
                       "sass failed to allocate response buffer");
         sass_delete_file_context(ctx_file);
@@ -320,10 +316,10 @@ ngx_http_sass_handler(ngx_http_request_t *r)
         return NGX_HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    ngx_cpystrn(content.data, (unsigned char *) mapfile, strlen(mapfile));
+    ngx_cpystrn(map.data, (unsigned char *) mapfile, strlen(mapfile));
 
-    b->start    = b->pos = content.data;
-    b->last     = b->end = content.data + strlen(mapfile);
+    b->start    = b->pos = map.data;
+    b->last     = b->end = map.data + strlen(mapfile);
     b->memory   = 1;
     b->last_buf = 1;
 
@@ -334,7 +330,7 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     sass_delete_file_context(ctx_file);
     ngx_http_send_header(r);
     return ngx_http_output_filter(r, &out);
-  
+
 }
 
 static void *
@@ -374,7 +370,7 @@ ngx_http_sass_merge_loc_conf(ngx_conf_t *cf, void *parent, void *child)
     ngx_conf_merge_uint_value(conf->precision, prev->precision, 5);
     ngx_conf_merge_off_value(conf->source_comments, prev->source_comments, 0);
     ngx_conf_merge_off_value(conf->omit_url, prev->omit_url, 0);
-    ngx_conf_merge_off_value(conf->source_type, prev->source_type, 0);  
+    ngx_conf_merge_off_value(conf->source_type, prev->source_type, 0);
     ngx_conf_merge_off_value(conf->map_embed, prev->map_embed, 0);
     ngx_conf_merge_off_value(conf->source_map_contents, prev->source_map_contents, 0);
     ngx_conf_merge_str_value(conf->source_map_root, prev->source_map_root, "");
