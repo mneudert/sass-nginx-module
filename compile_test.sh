@@ -26,17 +26,17 @@ if [ "${1}" != "--nocompile" ]; then
 
   if [ ! -d "nginx-${VER_NGINX}" ]; then
     wget "http://nginx.org/download/nginx-${VER_NGINX}.tar.gz" -O nginx.tar.gz \
-      && tar -xf nginx.tar.gz
+      && tar -xvf nginx.tar.gz
   fi
 
   if [ ! -d "lua-nginx-module-${VER_LUA_NGINX}" ]; then
     wget "https://github.com/openresty/lua-nginx-module/archive/v${VER_LUA_NGINX}.tar.gz" -O lua-nginx-module.tar.gz \
-      && tar -xf lua-nginx-module.tar.gz
+      && tar -xvf lua-nginx-module.tar.gz
   fi
 
   if [ ! -d "ngx_devel_kit-${VER_NGX_DEVEL}" ]; then
     wget "https://github.com/simpl/ngx_devel_kit/archive/v${VER_NGX_DEVEL}.tar.gz" -O ngx_devel_kit.tar.gz \
-      && tar -xf ngx_devel_kit.tar.gz
+      && tar -xvf ngx_devel_kit.tar.gz
   fi
 
 
@@ -44,7 +44,6 @@ if [ "${1}" != "--nocompile" ]; then
 
   cd "${moduledir}/lib/libsass"
   make shared
-
 
   echo "==> Building nginx"
 
