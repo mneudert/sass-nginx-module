@@ -115,7 +115,7 @@ static ngx_command_t  ngx_http_sass_commands[] = {
 
 
 static ngx_str_t  ngx_http_sass_type = ngx_string("text/css");
-static_ngx_str_t  ngx_http_map_type = ngx_string("application/octet-stream");
+static ngx_str_t  ngx_http_map_type = ngx_string("application/octet-stream");
 
 
 static ngx_str_t  err_levels[] = {
@@ -176,6 +176,7 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     ngx_http_sass_loc_conf_t  *clcf;
 
     const char                *output;
+    const char                *mapfile;
     struct Sass_Context       *ctx;
     struct Sass_File_Context  *ctx_file;
     struct Sass_Options       *options;
@@ -291,7 +292,7 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     }
 
     // Flush context if no map file
-    if (clcf->source_map_file.len === 0) {
+    if (clcf->source_map_file.len = 0) {
     sass_delete_file_context(ctx_file);
     }
     ngx_http_send_header(r);
