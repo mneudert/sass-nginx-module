@@ -292,7 +292,7 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     }
 
     // Flush context if no map file
-    if (!clcf->source_map_file) {
+    if ((clcf->source_map_file.len = 0)) {
     sass_delete_file_context(ctx_file);
     }
     ngx_http_send_header(r);
