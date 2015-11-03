@@ -115,6 +115,7 @@ static ngx_command_t  ngx_http_sass_commands[] = {
 
 
 static ngx_str_t  ngx_http_sass_type = ngx_string("text/css");
+static_ngx_str_t  ngx_http_map_type = ngx_string("application/octet-stream");
 
 
 static ngx_str_t  err_levels[] = {
@@ -278,18 +279,65 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     b->start    = b->pos = content.data;
     b->last     = b->end = content.data + strlen(output);
     b->memory   = 1;
+    if (clcf->source_map_file.len > 0) {
+    b->last_buf = 0;
+    } else {
     b->last_buf = 1;
+    }
 
     r->headers_out.status           = NGX_HTTP_OK;
     r->headers_out.content_type     = ngx_http_sass_type;
     r->headers_out.content_length_n = strlen(output);
+    }
+
+    // Flush context if no map file
+    if (clcf->source_map_file.len === 0) {
+    sass_delete_file_context(ctx_file);
+    }
+    ngx_http_send_header(r);
+
+    // End sequence if no map file
+    if (clcf->source_map_file.len > 0) {
+    ngx_http_output_filter(r, &out);
+    } else {
+    return ngx_http_output_filter(r, &out); 
+    }
+
+    if (clcf->source_map_file.len > 0) {
+      
+    mapfile = sass_context_get_source_map_string(ctx);
+
+    out.buf  = b;
+    out.next = NULL;
+
+    content.len  = sizeof(mapfile) - 1;
+    content.data = ngx_pnalloc(r->pool, strlen(mapfile));
+
+    if (NULL == content.data) {
+        ngx_log_error(clcf->error_log, r->connection->log, 0,
+                      "sass failed to allocate response buffer");
+        sass_delete_file_context(ctx_file);
+
+        return NGX_HTTP_INTERNAL_SERVER_ERROR;
+    }
+
+    ngx_cpystrn(content.data, (unsigned char *) output, strlen(mapfile));
+
+    b->start    = b->pos = content.data;
+    b->last     = b->end = content.data + strlen(mapfile);
+    b->memory   = 1;
+    b->last_buf = 1;
+
+    r->headers_out.status           = NGX_HTTP_OK;
+    r->headers_out.content_type     = ngx_http_map_type;
+    r->headers_out.content_length_n = strlen(mapfile);
+
+    ngx_http_send_header(r);
+    return ngx_http_output_filter(r, &out);
 
     }
 
-    sass_delete_file_context(ctx_file);
-    ngx_http_send_header(r);
-
-    return ngx_http_output_filter(r, &out);
+  
 }
 
 static void *
