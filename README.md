@@ -124,7 +124,6 @@ Precision:
 
 ```nginx
 location / {
-
     sass_precision:     5;       #default
     sass_precision:     10;
 }
@@ -135,7 +134,6 @@ Source map file:
 
 ```nginx
 location / {
-
     sass_map_file:    "sass_output.map";
 }
 ```
@@ -163,7 +161,6 @@ Source map root:
 
 ```nginx
 location / {
-
     sass_map_root:    "/some/directory";
 }
 ```
