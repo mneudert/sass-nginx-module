@@ -115,8 +115,8 @@ Detect SASS files (not SCSS):
 
 ```nginx
 location / {
-    sass_style  off;    # default
-    sass_style  on;
+    sass_source_type  off;    # default
+    sass_source_type  on;
 }
 ```
 
@@ -129,3 +129,42 @@ location / {
     sass_precision:     10;
 }
 ```
+To do really simple source maps, just add:
+
+Source map file:
+
+```nginx
+location / {
+
+    sass_map_file:    "sass_output.map";
+}
+```
+If it's not included in Nginx, it won't render out a source map for you.
+
+Fine grained control of source map functionality is also covered by Nginx.
+
+Source map embedding:
+
+```nginx
+location / {
+    sass_map_embed  off;    # default
+    sass_map_embed  on;
+}
+```
+Omit source map urls:
+
+```nginx
+location / {
+    sass_map_url  off;    # default
+    sass_map_url  on;
+}
+```
+Source map root:
+
+```nginx
+location / {
+
+    sass_map_root:    "/some/directory";
+}
+```
+
