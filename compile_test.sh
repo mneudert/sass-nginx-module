@@ -64,6 +64,7 @@ if [ "${1}" != "--nocompile" ]; then
       --with-cc-opt="-I ${sass_include}" \
       --with-ld-opt="-L ${moduledir}/lib/libsass/lib"
   make || exit $?
+  make install || exit $?
 fi
 
 
