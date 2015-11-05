@@ -44,7 +44,9 @@ if [ "${1}" != "--nocompile" ]; then
 
   cd "${moduledir}/lib/libsass"
   make shared
-  export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${moduledir}/lib/libsass/lib"
+   echo "==> Moving Libsass library"
+  cd "lib"
+  cp libsass.so /usr/lib/libsass.so
 
   echo "==> Building Nginx"
 
