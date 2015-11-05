@@ -44,8 +44,9 @@ if [ "${1}" != "--nocompile" ]; then
 
   cd "${moduledir}/lib/libsass"
   make shared
+  export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${moduledir}/lib/libsass/lib"
 
-  echo "==> Building nginx"
+  echo "==> Building Nginx"
 
   cd "${moduledir}/vendor/nginx-${VER_NGINX}"
 
@@ -67,10 +68,7 @@ if [ "${1}" != "--nocompile" ]; then
   make install || exit $?
 fi
 
-
 export PATH="$PATH:${moduledir}/vendor/nginx-${VER_NGINX}/objs"
-export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${moduledir}/lib/libsass/lib"
-
 
 echo "==> Testing!"
 
