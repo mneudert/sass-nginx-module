@@ -62,8 +62,8 @@ if [ "${1}" != "--nocompile" ]; then
       --add-module="${moduledir}/vendor/ngx_devel_kit-${VER_NGX_DEVEL}" \
       --add-module="${moduledir}/vendor/lua-nginx-module-${VER_LUA_NGINX}" \
       --add-module="${moduledir}" \
-      --with-cc-opt="-I ${sass_include}" \
-      --with-ld-opt="-L ${moduledir}/lib/libsass/lib"
+      --with-cc-opt="-I${sass_include}" \
+      --with-ld-opt="-L${moduledir}/lib/libsass/lib"
   make || exit $?
   make install || exit $?
 fi
