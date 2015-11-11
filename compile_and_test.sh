@@ -56,7 +56,6 @@ if [ "${1}" != "--nocompile" ]; then
 
   cd "../nginx-${VER_NGINX}"
 
-  echo "${moduledir}/vendor/libsass-${VER_LIBSASS}/include"
   if [ -d "${moduledir}/vendor/libsass-${VER_LIBSASS}/include" ]; then
     sass_include="${moduledir}/vendor/libsass-${VER_LIBSASS}/include"
   else
