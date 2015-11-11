@@ -25,7 +25,9 @@ __DATA__
 
         rewrite  ^(.*)\.css$  $1.scss  break;
 
-        body_filter_by_lua 'ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\\n"';
+        body_filter_by_lua_block {
+            ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\n"
+        }
     }
 --- request
     GET /default.css
@@ -43,7 +45,9 @@ body {
         sass_compile   on;
         sass_linefeed  "\n/* linefeed */\n";
 
-        body_filter_by_lua 'ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\\n"';
+        body_filter_by_lua_block {
+            ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\n"
+        }
     }
 --- request
     GET /default.scss

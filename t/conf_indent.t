@@ -23,7 +23,9 @@ __DATA__
 
         sass_compile  on;
 
-        body_filter_by_lua 'ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\\n"';
+        body_filter_by_lua_block {
+            ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\n"
+        }
     }
 --- request
     GET /default.scss
@@ -41,7 +43,9 @@ body {
         sass_compile  on;
         sass_indent   "    ";
 
-        body_filter_by_lua 'ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\\n"';
+        body_filter_by_lua_block {
+            ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\n"
+        }
     }
 --- request
     GET /default.scss
