@@ -26,22 +26,22 @@ if [ "${1}" != "--nocompile" ]; then
   cd "${moduledir}/vendor"
 
   if [ ! -d "nginx-${VER_NGINX}" ]; then
-    wget "http://nginx.org/download/nginx-${VER_NGINX}.tar.gz" -O nginx.tar.gz \
+    wget -q "http://nginx.org/download/nginx-${VER_NGINX}.tar.gz" -O nginx.tar.gz \
       && tar -xf nginx.tar.gz
   fi
 
   if [ ! -d "lua-nginx-module-${VER_LUA_NGINX}" ]; then
-    wget "https://github.com/openresty/lua-nginx-module/archive/v${VER_LUA_NGINX}.tar.gz" -O lua-nginx-module.tar.gz \
+    wget -q "https://github.com/openresty/lua-nginx-module/archive/v${VER_LUA_NGINX}.tar.gz" -O lua-nginx-module.tar.gz \
       && tar -xf lua-nginx-module.tar.gz
   fi
 
   if [ ! -d "libsass-${VER_LIBSASS}" ]; then
-    wget "https://github.com/sass/libsass/archive/${VER_LIBSASS}.tar.gz" -O libsass.tar.gz \
+    wget -q "https://github.com/sass/libsass/archive/${VER_LIBSASS}.tar.gz" -O libsass.tar.gz \
       && tar -xf libsass.tar.gz
   fi
 
   if [ ! -d "ngx_devel_kit-${VER_NGX_DEVEL}" ]; then
-    wget "https://github.com/simpl/ngx_devel_kit/archive/v${VER_NGX_DEVEL}.tar.gz" -O ngx_devel_kit.tar.gz \
+    wget -q "https://github.com/simpl/ngx_devel_kit/archive/v${VER_NGX_DEVEL}.tar.gz" -O ngx_devel_kit.tar.gz \
       && tar -xf ngx_devel_kit.tar.gz
   fi
 
