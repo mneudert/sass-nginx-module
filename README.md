@@ -6,7 +6,7 @@ NGINX module.
 Stop thinking about "sass watch" shell processes or the integration features of
 your IDE while still using the power of Sass while developing your websites.
 
-Supported versions of libsass:
+Supported versions of LibSass:
 
 - `3.2.5`
 - `3.3.0` (`3.3.2` used on travis)
@@ -26,8 +26,8 @@ Use with caution!
 ### Prerequisites
 
 To be able to compile this module you need
-[libsass](https://github.com/sass/libsass) available. For a list of tested, and
-therefore more or less supported, combinations of libsass and NGINX versions
+[LibSass](https://github.com/sass/libsass) available. For a list of tested, and
+therefore more or less supported, combinations of LibSass and NGINX versions
 please refer to the travis environment in `.travis.yml`. Using different
 versions can result in unexpected behaviour or won't work at all.
 
@@ -39,18 +39,18 @@ ldconfig -p | grep "libsass"
 
 If it does not show up try to rebuild the index first using *ldconfig* as
 *root* user and rerun the grep command. Sometimes you need to add the path
-where libsass is installed manually to the list of paths ldconfig is looking
+where LibSass is installed manually to the list of paths ldconfig is looking
 for libraries in.
 
 This can be done by adding the path to the *$LD\_LIBRARY\_PATH* variable or the
 file */etc/ld.so.conf*. Either way, please ensure the command above finds your
-local libsass installation before proceeding.
+local LibSass installation before proceeding.
 
 During compilation the header file `sass.h` has to be available. The files
 included inside this file are also required. The exact list depends on your
-libsass version.
+LibSass version.
 
-If you are using a _libsass version prior to 3.3.0_ you also need the file
+If you are using a _LibSass version prior to 3.3.0_ you also need the file
 `sass_context.h`.
 
 ### NGINX

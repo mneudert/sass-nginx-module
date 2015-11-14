@@ -1,10 +1,10 @@
-$bg_color: white;
-$fg_color: black;
+$color-background: white;
+$color-text: black;
 
 .output {
-  background-color: $bg_color;
+  background-color: $color-background;
 
   .with-style {
-    color: $fg_color;
+    color: $color-text;
   }
 }

@@ -21,9 +21,9 @@ if [ "${1}" != "--nocompile" ]; then
 
   [ -z `which wget` ] && echo 'can not find "wget" to download libraries' && exit 2
 
-  mkdir -p vendor
+  mkdir -p "${moduledir}/vendor"
 
-  cd vendor
+  cd "${moduledir}/vendor"
 
   if [ ! -d "nginx-${VER_NGINX}" ]; then
     wget "http://nginx.org/download/nginx-${VER_NGINX}.tar.gz" -O nginx.tar.gz \
@@ -46,15 +46,15 @@ if [ "${1}" != "--nocompile" ]; then
   fi
 
 
-  echo "==> Compiling libsass"
+  echo "==> Compiling LibSass"
 
-  cd "./libsass-${VER_LIBSASS}"
+  cd "${moduledir}/vendor/libsass-${VER_LIBSASS}"
   make shared
 
 
-  echo "==> Building nginx"
+  echo "==> Building NGINX"
 
-  cd "../nginx-${VER_NGINX}"
+  cd "${moduledir}/vendor/nginx-${VER_NGINX}"
 
   if [ -d "${moduledir}/vendor/libsass-${VER_LIBSASS}/include" ]; then
     sass_include="${moduledir}/vendor/libsass-${VER_LIBSASS}/include"
