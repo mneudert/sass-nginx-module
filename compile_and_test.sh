@@ -3,6 +3,13 @@
 cd "${0%/*}"
 
 moduledir=`pwd`
+nocompile=0
+
+if [ "${1}" == "--nocompile" ]; then
+  nocompile=1
+
+  shift
+fi
 
 
 echo "==> Checking parameters"
@@ -16,7 +23,7 @@ echo "==> Checking parameters"
 [ -z "${LUAJIT_LIB}" ] && echo 'parameter LUAJIT_LIB missing' && exit 1
 
 
-if [ "${1}" != "--nocompile" ]; then
+if [ 0 -eq ${nocompile} ]; then
   echo "==> Downloading sources"
 
   [ -z `which wget` ] && echo 'can not find "wget" to download libraries' && exit 2
@@ -79,4 +86,4 @@ export LD_LIBRARY_PATH="$LD_LIBRARY_PATH:${moduledir}/vendor/libsass-${VER_LIBSA
 
 echo "==> Testing!"
 
-cd "${moduledir}" && prove
+cd "${moduledir}" && prove $@
