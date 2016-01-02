@@ -9,8 +9,8 @@ addons:
     packages:
       - gcc-4.8
       - g++-4.8
+      - libluajit-5.1-2
       - libluajit-5.1-dev
-      - libluajit-5.1.2
 
 env:
   global:
