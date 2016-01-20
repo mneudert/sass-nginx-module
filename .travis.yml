@@ -16,15 +16,15 @@ env:
   global:
     - LUAJIT_LIB=/usr/lib/x86_64-linux-gnu/
     - LUAJIT_INC=/usr/include/luajit-2.0/
-    - VER_LUA_NGINX=0.9.19
+    - VER_LUA_NGINX=0.10.0
     - VER_NGX_DEVEL=0.2.19
   matrix:
     - VER_LIBSASS=3.2.5 VER_NGINX=1.6.3
     - VER_LIBSASS=3.2.5 VER_NGINX=1.8.0
-    - VER_LIBSASS=3.2.5 VER_NGINX=1.9.7
+    - VER_LIBSASS=3.2.5 VER_NGINX=1.9.9
     - VER_LIBSASS=3.3.2 VER_NGINX=1.6.3
     - VER_LIBSASS=3.3.2 VER_NGINX=1.8.0
-    - VER_LIBSASS=3.3.2 VER_NGINX=1.9.7
+    - VER_LIBSASS=3.3.2 VER_NGINX=1.9.9
 
 install: cpanm -v --notest Test::Nginx
 script:  ./compile_and_test.sh
