@@ -70,11 +70,17 @@ if [ 0 -eq ${nocompile} ]; then
     sass_include="${moduledir}/vendor/libsass-${VER_LIBSASS}"
   fi
 
+  # suppress any "unused variable 'max_tries'" errors
+  # when compiling for nginx 1.6.3 on travis
+  cc_travis=""
+
+  [ ! -z "${TRAVIS}" ] && cc_travis="-Wno-unused-variable "
+
   ./configure \
       --add-module="${moduledir}/vendor/ngx_devel_kit-${VER_NGX_DEVEL}" \
       --add-module="${moduledir}/vendor/lua-nginx-module-${VER_LUA_NGINX}" \
       --add-module="${moduledir}" \
-      --with-cc-opt="-I ${sass_include}" \
+      --with-cc-opt="${cc_travis}-I ${sass_include}" \
       --with-ld-opt="-L ${moduledir}/vendor/libsass-${VER_LIBSASS}/lib"
   make || exit $?
 fi
