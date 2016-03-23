@@ -9,7 +9,7 @@ your IDE while still using the power of Sass while developing your websites.
 Supported versions of LibSass:
 
 - `3.2.5`
-- `3.3.0` (`3.3.3` used on travis)
+- `3.3.0` (`3.3.4` used on travis)
 
 ### Note
 
@@ -201,7 +201,7 @@ If you fulfill the prerequisites you can use the script `./compile_and_test.sh`
 to download, compile and test in on go:
 
 ```shell
-VER_LIBSASS=3.3.3 \
+VER_LIBSASS=3.3.4 \
     VER_LUA_NGINX=0.10.2 \
     VER_NGX_DEVEL=0.2.19 \
     VER_NGINX=1.9.12 \
