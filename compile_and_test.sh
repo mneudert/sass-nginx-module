@@ -16,7 +16,6 @@ echo "==> Checking parameters"
 
 [ -z "${VER_LIBSASS}" ]   && echo 'parameter VER_LIBSASS missing'   && exit 1
 [ -z "${VER_LUA_NGINX}" ] && echo 'parameter VER_LUA_NGINX missing' && exit 1
-[ -z "${VER_NGX_DEVEL}" ] && echo 'parameter VER_NGX_DEVEL missing' && exit 1
 [ -z "${VER_NGINX}" ]     && echo 'parameter VER_NGINX missing'     && exit 1
 
 [ -z "${LUAJIT_INC}" ] && echo 'parameter LUAJIT_INC missing' && exit 1
@@ -47,11 +46,6 @@ if [ 0 -eq ${nocompile} ]; then
       && tar -xf libsass.tar.gz
   fi
 
-  if [ ! -d "ngx_devel_kit-${VER_NGX_DEVEL}" ]; then
-    wget -q "https://github.com/simpl/ngx_devel_kit/archive/v${VER_NGX_DEVEL}.tar.gz" -O ngx_devel_kit.tar.gz \
-      && tar -xf ngx_devel_kit.tar.gz
-  fi
-
 
   echo "==> Compiling LibSass"
 
@@ -77,7 +71,6 @@ if [ 0 -eq ${nocompile} ]; then
   [ ! -z "${TRAVIS}" ] && cc_travis="-Wno-unused-variable "
 
   ./configure \
-      --add-module="${moduledir}/vendor/ngx_devel_kit-${VER_NGX_DEVEL}" \
       --add-module="${moduledir}/vendor/lua-nginx-module-${VER_LUA_NGINX}" \
       --add-module="${moduledir}" \
       --with-cc-opt="${cc_travis}-I ${sass_include}" \

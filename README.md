@@ -76,7 +76,6 @@ To be able to run the unit tests you need additional modules configured:
 ```shell
 cd /path/to/nginx/src
 ./configure \
-  --add-module=/projects/public/ngx_devel_kit \
   --add-module=/projects/public/lua-nginx-module \
   --add-module=/projects/private/sass-nginx-module
 make install
@@ -203,17 +202,16 @@ to download, compile and test in on go:
 ```shell
 VER_LIBSASS=3.3.4 \
     VER_LUA_NGINX=0.10.2 \
-    VER_NGX_DEVEL=0.2.19 \
     VER_NGINX=1.9.13 \
     LUAJIT_LIB=/usr/lib/x86_64-linux-gnu/ \
     LUAJIT_INC=/usr/include/luajit-2.0/ \
     ./compile_and_test.sh
 ```
 
-The four passed variables `VER_LIBSASS`, `VER_LUA_NGINX`, `VER_NGX_DEVEL` and
-`VER_NGINX` define the module versions your are using for compilation. If a
+The four passed variables `VER_LIBSASS`, `VER_LUA_NGINX` and `VER_NGINX`
+define the module versions your are using for compilation. If a
 variable is not passed to the script it will be automatically taken from your
-environment. An error messages will be printed if no value is available.
+environment. An error message will be printed if no value is available.
 
 All dependencies will automatically be downloaded to the `./vendor` subfolder.
 
