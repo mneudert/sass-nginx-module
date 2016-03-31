@@ -23,9 +23,8 @@ __DATA__
 
         sass_compile  on;
 
-        body_filter_by_lua_block {
-            ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\n"
-        }
+        header_filter_by_lua_block { ngx.header.content_length = nil }
+        body_filter_by_lua_block   { ngx.arg[1] = ngx.arg[1] .. "\n" }
     }
 --- request
     GET /conf_output-style.scss
@@ -35,7 +34,6 @@ __DATA__
   .output .with-style {
     color: black; }
 
-
 === TEST 1: output style "compact"
 --- config
     location ~ ^.*\.scss$ {
@@ -44,9 +42,8 @@ __DATA__
         sass_compile       on;
         sass_output_style  compact;
 
-        body_filter_by_lua_block {
-            ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\n"
-        }
+        header_filter_by_lua_block { ngx.header.content_length = nil }
+        body_filter_by_lua_block   { ngx.arg[1] = ngx.arg[1] .. "\n" }
     }
 --- request
     GET /conf_output-style.scss
@@ -54,7 +51,6 @@ __DATA__
 .output { background-color: white; }
 
 .output .with-style { color: black; }
-
 
 === TEST 1: output style "compressed"
 --- config
@@ -64,15 +60,13 @@ __DATA__
         sass_compile       on;
         sass_output_style  compressed;
 
-        body_filter_by_lua_block {
-            ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\n"
-        }
+        header_filter_by_lua_block { ngx.header.content_length = nil }
+        body_filter_by_lua_block   { ngx.arg[1] = ngx.arg[1] .. "\n" }
     }
 --- request
     GET /conf_output-style.scss
 --- response_body
 .output{background-color:#fff}.output .with-style{color:#000}
-
 
 === TEST 1: output style "expanded"
 --- config
@@ -82,9 +76,8 @@ __DATA__
         sass_compile       on;
         sass_output_style  expanded;
 
-        body_filter_by_lua_block {
-            ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\n"
-        }
+        header_filter_by_lua_block { ngx.header.content_length = nil }
+        body_filter_by_lua_block   { ngx.arg[1] = ngx.arg[1] .. "\n" }
     }
 --- request
     GET /conf_output-style.scss
@@ -97,7 +90,6 @@ __DATA__
   color: black;
 }
 
-
 === TEST 1: output style "nested"
 --- config
     location ~ ^.*\.scss$ {
@@ -106,9 +98,8 @@ __DATA__
         sass_compile       on;
         sass_output_style  nested;
 
-        body_filter_by_lua_block {
-            ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\n"
-        }
+        header_filter_by_lua_block { ngx.header.content_length = nil }
+        body_filter_by_lua_block   { ngx.arg[1] = ngx.arg[1] .. "\n" }
     }
 --- request
     GET /conf_output-style.scss

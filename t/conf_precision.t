@@ -23,16 +23,14 @@ __DATA__
 
         sass_compile  on;
 
-        body_filter_by_lua_block {
-            ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\n"
-        }
+        header_filter_by_lua_block { ngx.header.content_length = nil }
+        body_filter_by_lua_block   { ngx.arg[1] = ngx.arg[1] .. "\n" }
     }
 --- request
     GET /conf_precision.scss
 --- response_body
 .precision-element {
   width: 1.95312px; }
-
 
 === TEST 2: custom precision
 --- config
@@ -42,9 +40,8 @@ __DATA__
         sass_compile    on;
         sass_precision  3;
 
-        body_filter_by_lua_block {
-            ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\n"
-        }
+        header_filter_by_lua_block { ngx.header.content_length = nil }
+        body_filter_by_lua_block   { ngx.arg[1] = ngx.arg[1] .. "\n" }
     }
 --- request
     GET /conf_precision.scss

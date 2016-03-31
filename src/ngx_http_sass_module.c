@@ -248,13 +248,13 @@ ngx_http_sass_handler(ngx_http_request_t *r)
     ngx_cpystrn(content.data, (unsigned char *) output, strlen(output));
 
     b->start    = b->pos = content.data;
-    b->last     = b->end = content.data + strlen(output);
+    b->last     = b->end = content.data + strlen(output) - 1;
     b->memory   = 1;
     b->last_buf = 1;
 
     r->headers_out.status           = NGX_HTTP_OK;
     r->headers_out.content_type     = ngx_http_sass_type;
-    r->headers_out.content_length_n = strlen(output);
+    r->headers_out.content_length_n = strlen(output) - 1;
 
     sass_delete_file_context(ctx_file);
     ngx_http_send_header(r);

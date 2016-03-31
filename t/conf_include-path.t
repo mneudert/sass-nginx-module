@@ -25,10 +25,6 @@ __DATA__
 
         sass_compile       on;
         sass_include_path  $TEST_NGINX_INCLUDE_DIR;
-
-        body_filter_by_lua_block {
-            ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\n"
-        }
     }
 --- request
     GET /conf_include-path.scss

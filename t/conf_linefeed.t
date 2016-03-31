@@ -25,9 +25,8 @@ __DATA__
 
         rewrite  ^(.*)\.css$  $1.scss  break;
 
-        body_filter_by_lua_block {
-            ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\n"
-        }
+        header_filter_by_lua_block { ngx.header.content_length = nil }
+        body_filter_by_lua_block   { ngx.arg[1] = ngx.arg[1] .. "\n" }
     }
 --- request
     GET /default.css
@@ -35,7 +34,6 @@ __DATA__
 body {
   background-color: white;
   color: black; }
-
 
 === TEST 2: custom linefeed
 --- config
@@ -45,9 +43,8 @@ body {
         sass_compile   on;
         sass_linefeed  "\n/* linefeed */\n";
 
-        body_filter_by_lua_block {
-            ngx.arg[1] = string.sub(ngx.arg[1], 1, -2) .. "\n"
-        }
+        header_filter_by_lua_block { ngx.header.content_length = nil }
+        body_filter_by_lua_block   { ngx.arg[1] = ngx.arg[1] .. "\n" }
     }
 --- request
     GET /default.scss
