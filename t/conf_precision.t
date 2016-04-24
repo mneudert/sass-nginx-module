@@ -45,6 +45,6 @@ __DATA__
     }
 --- request
     GET /conf_precision.scss
---- response_body_like
+--- response_body
 .precision-element {
   width: 1.953px; }
