@@ -133,6 +133,14 @@ location / {
 }
 ```
 
+Indented Syntax (SASS):
+
+```nginx
+location / {
+    sass_is_indented_syntax  off; # default
+    sass_is_indented_syntax  on;
+```
+
 Linefeed:
 
 ```nginx
