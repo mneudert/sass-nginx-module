@@ -20,10 +20,10 @@ env:
   matrix:
     - VER_LIBSASS=3.2.5 VER_NGINX=1.6.3
     - VER_LIBSASS=3.2.5 VER_NGINX=1.8.1
-    - VER_LIBSASS=3.2.5 VER_NGINX=1.9.15
+    - VER_LIBSASS=3.2.5 VER_NGINX=1.10.0
     - VER_LIBSASS=3.3.6 VER_NGINX=1.6.3
     - VER_LIBSASS=3.3.6 VER_NGINX=1.8.1
-    - VER_LIBSASS=3.3.6 VER_NGINX=1.9.15
+    - VER_LIBSASS=3.3.6 VER_NGINX=1.10.0
 
 install: cpanm -v --notest Test::Nginx
 script:  ./compile_and_test.sh
