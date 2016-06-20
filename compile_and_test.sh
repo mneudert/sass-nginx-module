@@ -2,7 +2,7 @@
 
 cd "${0%/*}"
 
-moduledir=`pwd`
+moduledir=$(pwd)
 nocompile=0
 
 if [ "${1}" == "--nocompile" ]; then
@@ -25,7 +25,7 @@ echo "==> Checking parameters"
 if [ 0 -eq ${nocompile} ]; then
   echo "==> Downloading sources"
 
-  [ -z `which wget` ] && echo 'can not find "wget" to download libraries' && exit 2
+  [ -z $(which wget) ] && echo 'can not find "wget" to download libraries' && exit 2
 
   mkdir -p "${moduledir}/vendor"
 
