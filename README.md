@@ -8,8 +8,8 @@ your IDE while still using the power of Sass while developing your websites.
 
 Supported versions of LibSass:
 
-- `3.2.5`
 - `3.3.0` (`3.3.6` used on travis)
+- `3.4.0`
 
 ### Note
 
