@@ -34,7 +34,7 @@ __DATA__
   .output .with-style {
     color: black; }
 
-=== TEST 1: output style "compact"
+=== TEST 2: output style "compact"
 --- config
     location ~ ^.*\.scss$ {
         root  $TEST_NGINX_FIXTURE_DIR;
@@ -52,7 +52,7 @@ __DATA__
 
 .output .with-style { color: black; }
 
-=== TEST 1: output style "compressed"
+=== TEST 3: output style "compressed"
 --- config
     location ~ ^.*\.scss$ {
         root  $TEST_NGINX_FIXTURE_DIR;
@@ -68,7 +68,7 @@ __DATA__
 --- response_body
 .output{background-color:#fff}.output .with-style{color:#000}
 
-=== TEST 1: output style "expanded"
+=== TEST 4: output style "expanded"
 --- config
     location ~ ^.*\.scss$ {
         root  $TEST_NGINX_FIXTURE_DIR;
@@ -90,7 +90,7 @@ __DATA__
   color: black;
 }
 
-=== TEST 1: output style "nested"
+=== TEST 5: output style "nested"
 --- config
     location ~ ^.*\.scss$ {
         root  $TEST_NGINX_FIXTURE_DIR;
