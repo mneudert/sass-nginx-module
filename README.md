@@ -75,14 +75,25 @@ To be able to run the unit tests you need additional modules configured:
 
 ```shell
 cd /path/to/nginx/src
+
+# configure as static module
 ./configure \
   --add-module=/projects/public/lua-nginx-module \
   --add-module=/projects/private/sass-nginx-module
+
+# configure as dynamic module
+./configure \
+  --add-module=/projects/public/lua-nginx-module \
+  --add-dynamic-module=/projects/private/sass-nginx-module
+
 make install
 ```
 
 
 ## Configuration
+
+__Note__: If you have compiled a dynamic module you need to also add the
+`load_module` directive with the appropriate directory.
 
 The configuration is pretty straightforward:
 

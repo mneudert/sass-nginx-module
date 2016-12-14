@@ -70,12 +70,25 @@ if [ 0 -eq ${nocompile} ]; then
 
   [ ! -z "${TRAVIS}" ] && cc_travis="-Wno-unused-variable "
 
-  ./configure \
-      --add-module="${moduledir}/vendor/lua-nginx-module-${VER_LUA_NGINX}" \
-      --add-module="${moduledir}" \
-      --with-cc-opt="${cc_travis}-I ${sass_include}" \
-      --with-ld-opt="-L ${moduledir}/vendor/libsass-${VER_LIBSASS}/lib"
+  if [ ! -z "${DYNAMIC}" ]; then
+    ./configure \
+        --add-module="${moduledir}/vendor/lua-nginx-module-${VER_LUA_NGINX}" \
+        --add-dynamic-module="${moduledir}" \
+        --with-cc-opt="${cc_travis}-I ${sass_include}" \
+        --with-ld-opt="-L ${moduledir}/vendor/libsass-${VER_LIBSASS}/lib"
+  else
+    ./configure \
+        --add-module="${moduledir}/vendor/lua-nginx-module-${VER_LUA_NGINX}" \
+        --add-module="${moduledir}" \
+        --with-cc-opt="${cc_travis}-I ${sass_include}" \
+        --with-ld-opt="-L ${moduledir}/vendor/libsass-${VER_LIBSASS}/lib"
+  fi
+
   make || exit $?
+
+  if [ ! -u "${DYNAMIC}" ]; then
+    cp "./objs/ngx_http_sass_module.so" "${moduledir}/vendor/"
+  fi
 fi
 
 
