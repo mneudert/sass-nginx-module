@@ -216,7 +216,7 @@ VER_LIBSASS=3.3.6 \
     ./compile_and_test.sh
 ```
 
-The four passed variables `VER_LIBSASS`, `VER_LUA_NGINX` and `VER_NGINX`
+The three passed variables `VER_LIBSASS`, `VER_LUA_NGINX` and `VER_NGINX`
 define the module versions your are using for compilation. If a
 variable is not passed to the script it will be automatically taken from your
 environment. An error message will be printed if no value is available.
