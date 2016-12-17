@@ -86,7 +86,7 @@ if [ 0 -eq ${nocompile} ]; then
 
   make || exit $?
 
-  if [ ! -u "${DYNAMIC}" ]; then
+  if [ ! -z "${DYNAMIC}" ]; then
     cp "./objs/ngx_http_sass_module.so" "${moduledir}/vendor/"
   fi
 fi
