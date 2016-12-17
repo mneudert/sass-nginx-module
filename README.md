@@ -232,6 +232,9 @@ define the module versions your are using for compilation. If a
 variable is not passed to the script it will be automatically taken from your
 environment. An error message will be printed if no value is available.
 
+Running the compilation and testing using a dynamic module is possible by
+additionaly passing `DYNAMIC=true` to the script.
+
 All dependencies will automatically be downloaded to the `./vendor` subfolder.
 
 To skip the compilation (and download) step you can pass the `--nocompile` flag:
