@@ -219,7 +219,7 @@ If you fulfill the prerequisites you can use the script `./compile_and_test.sh`
 to download, compile and test in on go:
 
 ```shell
-VER_LIBSASS=3.3.6 \
+VER_LIBSASS=3.4.0 \
     VER_LUA_NGINX=0.10.7 \
     VER_NGINX=1.11.0 \
     LUAJIT_LIB=/usr/lib/x86_64-linux-gnu/ \
