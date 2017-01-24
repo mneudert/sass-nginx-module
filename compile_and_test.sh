@@ -57,30 +57,17 @@ if [ 0 -eq ${nocompile} ]; then
 
   cd "${moduledir}/vendor/nginx-${VER_NGINX}"
 
-  if [ -d "${moduledir}/vendor/libsass-${VER_LIBSASS}/include" ]; then
-    sass_include="${moduledir}/vendor/libsass-${VER_LIBSASS}/include"
-  else
-    # required for libsass < 3.3.0
-    sass_include="${moduledir}/vendor/libsass-${VER_LIBSASS}"
-  fi
-
-  # suppress any "unused variable 'max_tries'" errors
-  # when compiling for nginx 1.6.3 on travis
-  cc_travis=""
-
-  [ ! -z "${TRAVIS}" ] && cc_travis="-Wno-unused-variable "
-
   if [ ! -z "${DYNAMIC}" ]; then
     ./configure \
         --add-module="${moduledir}/vendor/lua-nginx-module-${VER_LUA_NGINX}" \
         --add-dynamic-module="${moduledir}" \
-        --with-cc-opt="${cc_travis}-I ${sass_include}" \
+        --with-cc-opt="-I ${moduledir}/vendor/libsass-${VER_LIBSASS}/include" \
         --with-ld-opt="-L ${moduledir}/vendor/libsass-${VER_LIBSASS}/lib"
   else
     ./configure \
         --add-module="${moduledir}/vendor/lua-nginx-module-${VER_LUA_NGINX}" \
         --add-module="${moduledir}" \
-        --with-cc-opt="${cc_travis}-I ${sass_include}" \
+        --with-cc-opt="-I ${moduledir}/vendor/libsass-${VER_LIBSASS}/include" \
         --with-ld-opt="-L ${moduledir}/vendor/libsass-${VER_LIBSASS}/lib"
   fi
 
