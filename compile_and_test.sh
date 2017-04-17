@@ -37,7 +37,13 @@ if [ 0 -eq ${nocompile} ]; then
   fi
 
   if [ ! -d "lua-nginx-module-${VER_LUA_NGINX}" ]; then
-    wget -q "https://github.com/openresty/lua-nginx-module/archive/v${VER_LUA_NGINX}.tar.gz" -O lua-nginx-module.tar.gz \
+    VER_LUA_NGINX_DL="${VER_LUA_NGINX}"
+
+    if [ 40 -ne ${#VER_LUA_NGINX} ]; then
+      VER_LUA_NGINX_DL="v${VER_LUA_NGINX_DL}"
+    fi
+
+    wget -q "https://github.com/openresty/lua-nginx-module/archive/${VER_LUA_NGINX_DL}.tar.gz" -O lua-nginx-module.tar.gz \
       && tar -xf lua-nginx-module.tar.gz
   fi
 
