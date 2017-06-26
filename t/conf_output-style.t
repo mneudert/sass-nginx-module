@@ -2,21 +2,21 @@ use File::Spec;
 use Test::Nginx::Socket;
 
 # setup testing environment
-my $FixtureDir;
+my $fixture_dir;
 
 if (defined($ENV{TRAVIS_BUILD_DIR})) {
-    $FixtureDir = File::Spec->catdir($ENV{TRAVIS_BUILD_DIR}, 't', 'fixtures');
+    $fixture_dir = File::Spec->catdir($ENV{TRAVIS_BUILD_DIR}, 't', 'fixtures');
 } else {
-    $FixtureDir = File::Spec->catdir(html_dir(), '..', '..', 'fixtures');
+    $fixture_dir = File::Spec->catdir(html_dir(), '..', '..', 'fixtures');
 }
 
-$ENV{TEST_NGINX_FIXTURE_DIR} = $FixtureDir;
+$ENV{TEST_NGINX_FIXTURE_DIR} = $fixture_dir;
 
-my $FixtureConfig = (defined $ENV{DYNAMIC}) ? '_nginx-dynamic.conf' : '_nginx-static.conf';
-my $FixtureHttp   = File::Spec->catfile($FixtureDir, $FixtureConfig);
+my $fixture_config = (defined $ENV{DYNAMIC}) ? '_nginx-dynamic.conf' : '_nginx-static.conf';
+my $fixture_http   = File::Spec->catfile($fixture_dir, $fixture_config);
 
-open(my $fh, '<', $FixtureHttp) or die "cannot open < $FixtureHttp: $!";
-read($fh, our $HttpConfig, -s $fh);
+open(my $fh, '<', $fixture_http) or die "cannot open < $fixture_http: $!";
+read($fh, our $http_config, -s $fh);
 close $fh;
 
 # proceed with testing
@@ -29,7 +29,7 @@ run_tests();
 __DATA__
 
 === TEST 1: default output style
---- main_config eval: $::HttpConfig
+--- main_config eval: $::http_config
 --- config
     location ~ ^.*\.scss$ {
         root  $TEST_NGINX_FIXTURE_DIR;
@@ -48,7 +48,7 @@ __DATA__
     color: black; }
 
 === TEST 2: output style "compact"
---- main_config eval: $::HttpConfig
+--- main_config eval: $::http_config
 --- config
     location ~ ^.*\.scss$ {
         root  $TEST_NGINX_FIXTURE_DIR;
@@ -67,7 +67,7 @@ __DATA__
 .output .with-style { color: black; }
 
 === TEST 3: output style "compressed"
---- main_config eval: $::HttpConfig
+--- main_config eval: $::http_config
 --- config
     location ~ ^.*\.scss$ {
         root  $TEST_NGINX_FIXTURE_DIR;
@@ -84,7 +84,7 @@ __DATA__
 .output{background-color:#fff}.output .with-style{color:#000}
 
 === TEST 4: output style "expanded"
---- main_config eval: $::HttpConfig
+--- main_config eval: $::http_config
 --- config
     location ~ ^.*\.scss$ {
         root  $TEST_NGINX_FIXTURE_DIR;
@@ -107,7 +107,7 @@ __DATA__
 }
 
 === TEST 5: output style "nested"
---- main_config eval: $::HttpConfig
+--- main_config eval: $::http_config
 --- config
     location ~ ^.*\.scss$ {
         root  $TEST_NGINX_FIXTURE_DIR;
