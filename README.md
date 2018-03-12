@@ -221,7 +221,7 @@ to download, compile and test in on go:
 ```shell
 VER_LIBSASS=3.4.9 \
     VER_LUA_NGINX=0.10.11 \
-    VER_NGINX=1.13.8 \
+    VER_NGINX=1.13.9 \
     LUAJIT_LIB=/usr/lib/x86_64-linux-gnu/ \
     LUAJIT_INC=/usr/include/luajit-2.0/ \
     ./compile_and_test.sh
