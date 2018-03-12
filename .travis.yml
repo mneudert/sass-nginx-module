@@ -13,8 +13,9 @@ env:
     - LUAJIT_INC=/usr/include/luajit-2.0/
   matrix:
     - VER_LIBSASS=3.3.6 VER_LUA_NGINX=0.10.8 VER_NGINX=1.10.3
-    - VER_LIBSASS=3.4.9 VER_LUA_NGINX=0.10.11 VER_NGINX=1.13.9
-    - DYNAMIC=true VER_LIBSASS=3.4.9 VER_LUA_NGINX=0.10.11 VER_NGINX=1.13.9
+    - VER_LIBSASS=3.4.9 VER_LUA_NGINX=0.10.11 VER_NGINX=1.12.2
+    - VER_LIBSASS=3.5.0 VER_LUA_NGINX=0.10.11 VER_NGINX=1.13.9
+    - DYNAMIC=true VER_LIBSASS=3.5.0 VER_LUA_NGINX=0.10.11 VER_NGINX=1.13.9
 
 install: cpanm -v --notest Test::Nginx
 script: ./compile_and_test.sh
