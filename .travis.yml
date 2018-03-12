@@ -1,5 +1,5 @@
 language: perl
-sudo:     false
+sudo: false
 
 addons:
   apt:
@@ -21,4 +21,4 @@ env:
     - DYNAMIC=true VER_LIBSASS=3.4.9 VER_LUA_NGINX=0.10.11 VER_NGINX=1.13.8
 
 install: cpanm -v --notest Test::Nginx
-script:  ./compile_and_test.sh
+script: ./compile_and_test.sh
