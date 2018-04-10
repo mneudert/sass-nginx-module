@@ -1,19 +1,15 @@
+use File::Basename;
 use File::Spec;
 use Test::Nginx::Socket;
 
 # setup testing environment
-my $fixture_dir;
-
-if (defined($ENV{TRAVIS_BUILD_DIR})) {
-    $fixture_dir = File::Spec->catdir($ENV{TRAVIS_BUILD_DIR}, 't', 'fixtures');
-} else {
-    $fixture_dir = File::Spec->catdir(html_dir(), '..', '..', 'fixtures');
-}
-
-$ENV{TEST_NGINX_FIXTURE_DIR} = $fixture_dir;
+my $test_dir    = File::Spec->rel2abs(dirname(__FILE__));
+my $fixture_dir = File::Spec->catdir($test_dir, 'fixtures');
 
 my $fixture_config = (defined $ENV{DYNAMIC}) ? '_nginx-dynamic.conf' : '_nginx-static.conf';
 my $fixture_http   = File::Spec->catfile($fixture_dir, $fixture_config);
+
+$ENV{TEST_NGINX_FIXTURE_DIR} = $fixture_dir;
 
 open(my $fh, '<', $fixture_http) or die "cannot open < $fixture_http: $!";
 read($fh, our $http_config, -s $fh);
