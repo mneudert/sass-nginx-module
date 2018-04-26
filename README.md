@@ -10,7 +10,7 @@ Supported versions of LibSass:
 
 - `3.3.0` (`3.3.6` used on travis)
 - `3.4.0` (`3.4.9` used on travis)
-- `3.5.0` (`3.5.3` used on travis)
+- `3.5.0` (`3.5.4` used on travis)
 
 ### Note
 
@@ -220,7 +220,7 @@ If you fulfill the prerequisites you can use the script `./compile_and_test.sh`
 to download, compile and test in on go:
 
 ```shell
-VER_LIBSASS=3.5.3 \
+VER_LIBSASS=3.5.4 \
     VER_LUA_NGINX=0.10.11 \
     VER_NGINX=1.13.9 \
     LUAJIT_LIB=/usr/lib/x86_64-linux-gnu/ \
