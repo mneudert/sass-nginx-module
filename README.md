@@ -1,10 +1,8 @@
 # Syntactically Awesome NGINX Module
 
-Providing on-the-fly compiling of [Sass](http://sass-lang.com/) files as an
-NGINX module.
+Providing on-the-fly compiling of [Sass](http://sass-lang.com/) files as an NGINX module.
 
-Stop thinking about "sass watch" shell processes or the integration features of
-your IDE while still using the power of Sass while developing your websites.
+Stop thinking about "sass watch" shell processes or the integration features of your IDE while still using the power of Sass while developing your websites.
 
 Supported versions of LibSass:
 
@@ -16,21 +14,15 @@ Supported versions of LibSass:
 
 This module is experimental and only been used in development environments.
 
-You can, and should, expect some weird bugs from serving unparsed files up to
-completely deactivating your vhost.
+You can, and should, expect some weird bugs from serving unparsed files up to completely deactivating your vhost.
 
 Use with caution!
-
 
 ## Compilation
 
 ### Prerequisites
 
-To be able to compile this module you need
-[LibSass](https://github.com/sass/libsass) available. For a list of tested, and
-therefore more or less supported, combinations of LibSass and NGINX versions
-please refer to the travis environment in `.travis.yml`. Using different
-versions can result in unexpected behaviour or won't work at all.
+To be able to compile this module you need [LibSass](https://github.com/sass/libsass) available. For a list of tested, and therefore more or less supported, combinations of LibSass and NGINX versions please refer to the travis environment in `.travis.yml`. Using different versions can result in unexpected behaviour or won't work at all.
 
 Also ldconfig has to find the library:
 
@@ -38,21 +30,13 @@ Also ldconfig has to find the library:
 ldconfig -p | grep "libsass"
 ```
 
-If it does not show up try to rebuild the index first using *ldconfig* as
-*root* user and rerun the grep command. Sometimes you need to add the path
-where LibSass is installed manually to the list of paths ldconfig is looking
-for libraries in.
+If it does not show up try to rebuild the index first using *ldconfig* as *root* user and rerun the grep command. Sometimes you need to add the path where LibSass is installed manually to the list of paths ldconfig is looking for libraries in.
 
-This can be done by adding the path to the *$LD\_LIBRARY\_PATH* variable or the
-file */etc/ld.so.conf*. Either way, please ensure the command above finds your
-local LibSass installation before proceeding.
+This can be done by adding the path to the *$LD\_LIBRARY\_PATH* variable or the file */etc/ld.so.conf*. Either way, please ensure the command above finds your local LibSass installation before proceeding.
 
-During compilation the header file `sass.h` has to be available. The files
-included inside this file are also required. The exact list depends on your
-LibSass version.
+During compilation the header file `sass.h` has to be available. The files included inside this file are also required. The exact list depends on your LibSass version.
 
-If you are using a _LibSass version prior to 3.3.0_ you also need the file
-`sass_context.h`.
+If you are using a _LibSass version prior to 3.3.0_ you also need the file `sass_context.h`.
 
 ### NGINX
 
@@ -90,11 +74,9 @@ cd /path/to/nginx/src
 make install
 ```
 
-
 ## Configuration
 
-__Note__: If you have compiled a dynamic module you need to also add the
-`load_module` directive with the appropriate directory.
+__Note__: If you have compiled a dynamic module you need to also add the `load_module` directive with the appropriate directory.
 
 The configuration is pretty straightforward:
 
@@ -110,8 +92,7 @@ server {
 
 Add this location block to your server activates the sass compilation.
 
-Using a rewrite ensures all the magic happens under the hood and you do not
-have to change your application to load different files.
+Using a rewrite ensures all the magic happens under the hood and you do not have to change your application to load different files.
 
 ### Parameters
 
@@ -216,8 +197,7 @@ To be able to run them using `prove` (perl).
 
 ### Testing Script
 
-If you fulfill the prerequisites you can use the script `./compile_and_test.sh`
-to download, compile and test in on go:
+If you fulfill the prerequisites you can use the script `./compile_and_test.sh` to download, compile and test in on go:
 
 ```shell
 VER_LIBSASS=3.5.5 \
@@ -228,13 +208,9 @@ VER_LIBSASS=3.5.5 \
     ./compile_and_test.sh
 ```
 
-The three passed variables `VER_LIBSASS`, `VER_LUA_NGINX` and `VER_NGINX`
-define the module versions your are using for compilation. If a
-variable is not passed to the script it will be automatically taken from your
-environment. An error message will be printed if no value is available.
+The three passed variables `VER_LIBSASS`, `VER_LUA_NGINX` and `VER_NGINX` define the module versions your are using for compilation. If a variable is not passed to the script it will be automatically taken from your environment. An error message will be printed if no value is available.
 
-Running the compilation and testing using a dynamic module is possible by
-additionally passing `DYNAMIC=true` to the script.
+Running the compilation and testing using a dynamic module is possible by additionally passing `DYNAMIC=true` to the script.
 
 All dependencies will automatically be downloaded to the `./vendor` subfolder.
 
@@ -245,11 +221,9 @@ ALL_THE_CONFIGURATION_VARIABLES \
     ./compile_and_test.sh --nocompile
 ```
 
-Please be aware that (for now) all the variables are still required for the
-script to run.
+Please be aware that (for now) all the variables are still required for the script to run.
 
-If you want to only run a single test from the testing folder you can pass it
-as a parameter to the script (and therefore on to `prove`):
+If you want to only run a single test from the testing folder you can pass it as a parameter to the script (and therefore on to `prove`):
 
 ```shell
 # single test
@@ -261,8 +235,6 @@ ALL_THE_CONFIGURATION_VARIABLES \
     ./compile_and_test.sh --nocompile t/conf_output-style.t
 ```
 
-
 ## License
 
-Licensed under the
-[BSD 2 Clause License](https://opensource.org/licenses/BSD-2-Clause).
+Licensed under the [BSD 2 Clause License](https://opensource.org/licenses/BSD-2-Clause).
