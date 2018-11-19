@@ -3,11 +3,6 @@
 #include <ngx_http.h>
 #include <sass.h>
 
-// required for libsass < 3.3.0
-#ifndef SASS_C_CONTEXT_H
-#include <sass_context.h>
-#endif
-
 
 typedef struct {
     ngx_flag_t  enable;

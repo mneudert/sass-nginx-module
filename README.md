@@ -36,8 +36,6 @@ This can be done by adding the path to the *$LD\_LIBRARY\_PATH* variable or the 
 
 During compilation the header file `sass.h` has to be available. The files included inside this file are also required. The exact list depends on your LibSass version.
 
-If you are using a _LibSass version prior to 3.3.0_ you also need the file `sass_context.h`.
-
 ### NGINX
 
 Using this module is as easy as recompiling NGINX from source:
