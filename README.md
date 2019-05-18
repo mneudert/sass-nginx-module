@@ -199,8 +199,8 @@ If you fulfill the prerequisites you can use the script `./compile_and_test.sh` 
 
 ```shell
 VER_LIBSASS=3.5.5 \
-    VER_LUA_NGINX=0.10.13 \
-    VER_NGINX=1.14.1 \
+    VER_LUA_NGINX=0.10.15 \
+    VER_NGINX=1.16.0 \
     LUAJIT_LIB=/usr/lib/x86_64-linux-gnu/ \
     LUAJIT_INC=/usr/include/luajit-2.0/ \
     ./compile_and_test.sh
