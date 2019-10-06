@@ -8,7 +8,7 @@ Supported versions of LibSass:
 
 - `3.4.0` (`3.4.9` used on travis)
 - `3.5.0` (`3.5.5` used on travis)
-- `3.6.0` (`3.6.1` used on travis)
+- `3.6.0` (`3.6.2` used on travis)
 
 ### Note
 
