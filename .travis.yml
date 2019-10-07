@@ -1,4 +1,5 @@
 language: perl
+perl: 5.22
 sudo: false
 
 addons:
